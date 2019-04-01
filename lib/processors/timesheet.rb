@@ -6,21 +6,29 @@ module Processors
   class Timesheet
     DEFAULTS = { rules: ["IsOvertimeDay"], criteria: nil }
 
-    attr_reader :timesheet
+    attr_reader :timesheet, :rules
 
     def initialize(timesheet, options={})
       @result_timesheet = OpenStruct.new({id: timesheet.id, billable: 0.0,
-                                        regular: 0.0, overtime: 0.0, total: 0.0})
+                                        regular: 0.0, payable: 0.0, overtime: 0.0, total: 0.0})
       @timesheet = timesheet
       @options = DEFAULTS.merge(options.symbolize_keys)
     end
 
     def process_timesheet
       @timesheet.activities.map do |activity|
-        base_rule = BaseRule.new(activity, @options[:criteria])
+        base_rule = Rules::Base.new(activity, @options[:criteria])
 
-        @options[:rules].each do |rule|
-          rule.send(:new, base_rule).process_activity
+        if @options[:rules].empty?
+          base_rule.process_activity
+        else
+          @options[:rules].each do |rule|
+            rule.send(:new, base_rule).process_activity
+          end
+        end
+
+        [:billable, :regular, :payable, :overtime, :total].each do |attribute|
+          @result_timesheet[attribute] += base_rule.processed_activity[attribute]
         end
 
         base_rule.processed_activity

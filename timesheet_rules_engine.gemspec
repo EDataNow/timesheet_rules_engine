@@ -11,4 +11,5 @@ Gem::Specification.new do |s|
     'http://rubygems.org/gems/timesheet_rules_engine'
   s.license       = 'MIT'
   s.test_files = Dir["spec/**/*"]
+  s.add_dependency "holidays"
 end
