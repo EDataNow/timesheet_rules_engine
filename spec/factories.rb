@@ -1,4 +1,5 @@
 require 'factory_bot'
+require 'date'
 
 FactoryBot.define do
   factory :timesheet_no_activities, class: Hash do
@@ -18,5 +19,7 @@ FactoryBot.define do
     paid { true }
     paid_overtime { true }
     billed { true }
+    from { DateTime.parse("2018-01-01 9:00AM") }
+    to { DateTime.parse("2018-01-01 1:00PM") }
   end
 end

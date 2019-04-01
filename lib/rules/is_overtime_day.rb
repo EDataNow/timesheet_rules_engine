@@ -4,6 +4,7 @@ module Rules
                   maximum_daily_hours: 0.0,
                   minimum_weekly_hours: 0.0,
                   maximum_weekly_hours: 0.0,
+                  overtime_days: ["saturday", "sunday"],
                   saturdays_overtime: true,
                   sundays_overtime: true,
                   holidays_overtime: true,
@@ -12,23 +13,32 @@ module Rules
                   closest_minute: 8.0
                 }
 
-    attr_reader :criteria, :activity, :processed_activity
+    attr_reader :criteria, :activity, :processed_activity, :base
 
-    def initialize(base=nil, activity=nil, criteria)
+    def initialize(base, activity=nil, criteria=nil)
       if base
         @activity = base.activity
         @criteria = base.criteria
-        @process_activity = base.processed_activity
+        @processed_activity = base.processed_activity
+        @base = base
       else
-        @activity = activity
-        @processed_activity = OpenStruct.new({id: activity.id, billable: 0.0,
-                                          regular: 0.0, overtime: 0.0, total: 0.0})
-        @criteria = DEFAULTS.merge(criteria.symbolize_keys)
+        super(activity, criteria)
       end
     end
 
     def process_activity
-      @processed_activity
+      if is_overtime_day
+        @processed_activity[:billable] = 0.0
+        @processed_activity[:payable] = 0.0
+        @processed_activity[:regular] = 0.0
+        @processed_activity[:overtime] = @activity.total_hours
+        @processed_activity[:total] = @activity.total_hours
+      end
     end
+
+    def is_overtime_day
+      true
+    end
+
   end
 end

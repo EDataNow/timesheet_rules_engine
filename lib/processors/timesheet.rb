@@ -1,6 +1,7 @@
 require 'rules/base'
 require 'rules/is_overtime_day'
 require 'ostruct'
+require 'byebug'
 
 module Processors
   class Timesheet
@@ -23,7 +24,11 @@ module Processors
           base_rule.process_activity
         else
           @options[:rules].each do |rule|
-            rule.send(:new, base_rule).process_activity
+            "Rules::#{rule}".constantize.send(:new, base_rule).process_activity
+
+            # if base_rule.stop
+            #   break
+            # end
           end
         end
 
