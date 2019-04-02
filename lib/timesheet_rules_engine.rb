@@ -3,7 +3,7 @@ require 'processors/timesheet'
 class TimesheetRulesEngine
   DEFAULTS = { rules: [] }
 
-  attr_accessor :current_weekly_hours
+  attr_reader :current_weekly_hours
 
   def initialize(timesheets=[], options={})
     @timesheets = timesheets
@@ -17,6 +17,8 @@ class TimesheetRulesEngine
       timesheet = Processors::Timesheet.new(timesheet, @options.merge({current_weekly_hours: @current_weekly_hours})).process_timesheet
 
       @current_weekly_hours += timesheet.total
+
+      timesheet
     end
   end
 end
