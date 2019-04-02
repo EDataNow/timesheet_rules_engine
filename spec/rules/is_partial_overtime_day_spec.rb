@@ -196,7 +196,71 @@ module Rules
               expect(subject.total).to eq(4.0)
             end
 
-            it "should not be overtime" do
+            it "should be overtime" do
+              expect(overtime_rule.is_partial_overtime_day).to be true
+            end
+          end
+        end
+
+        context 'on weekends and holidays' do
+          let(:criteria) {
+                          {
+                              overtime_days: ["saturday", "sunday"],
+                              saturdays_overtime: true,
+                              sundays_overtime: true,
+                              holidays_overtime: true,
+                            }
+                        }
+
+          context 'on regular days' do
+            context 'when activity starts and ends on a regular day' do
+              let(:overtime_rule) { IsPartialOvertimeDay.new(nil, OpenStruct.new(attributes_for(:activity, total_hours: 4.0, from: DateTime.parse("2019-04-11 9:00am"),
+                                                                          to: DateTime.parse("2019-04-11 1:00pm"))), criteria) }
+
+              subject { overtime_rule.process_activity }
+
+              it "should have all hours in overtime" do
+                expect(subject.regular).to eq(0.0)
+                expect(subject.overtime).to eq(0.0)
+                expect(subject.total).to eq(0.0)
+              end
+
+              it "should be overtime" do
+                expect(overtime_rule.is_partial_overtime_day).to be false
+              end
+            end
+          end
+
+          context 'when activity starts on a weekend and ends on a regular day' do
+            let(:overtime_rule) { IsPartialOvertimeDay.new(nil, OpenStruct.new(attributes_for(:activity, total_hours: 4.0, from: DateTime.parse("2019-04-07 9:00pm"),
+                                                                        to: DateTime.parse("2019-04-08 1:00am"))), criteria) }
+
+            subject { overtime_rule.process_activity }
+
+            it "should have all hours in overtime" do
+              expect(subject.regular).to eq(1.0)
+              expect(subject.overtime).to eq(3.0)
+              expect(subject.total).to eq(4.0)
+            end
+
+            it "should be overtime" do
+              expect(overtime_rule.is_partial_overtime_day).to be true
+            end
+          end
+
+          context 'when activity starts on a regular day and ends on a weekend or holiday' do
+            let(:overtime_rule) { IsPartialOvertimeDay.new(nil, OpenStruct.new(attributes_for(:activity, total_hours: 4.0, from: DateTime.parse("2019-04-18 9:00pm"),
+                                                                        to: DateTime.parse("2019-04-19 1:00am"))), criteria) }
+
+            subject { overtime_rule.process_activity }
+
+            it "should not have all hours in overtime" do
+              expect(subject.regular).to eq(3.0)
+              expect(subject.overtime).to eq(1.0)
+              expect(subject.total).to eq(4.0)
+            end
+
+            it "should be overtime" do
               expect(overtime_rule.is_partial_overtime_day).to be true
             end
           end
