@@ -42,6 +42,10 @@ module Rules
       @processed_activity
     end
 
+    def check
+      true
+    end
+
     def method_missing(method, *args)
       if @criteria.has_key?(method)
         @criteria[method]
