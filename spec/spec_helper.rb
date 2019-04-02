@@ -1,5 +1,6 @@
 require 'factory_bot'
 require 'date'
+require 'byebug'
 
 RSpec.configure do |config|
   config.include FactoryBot::Syntax::Methods
