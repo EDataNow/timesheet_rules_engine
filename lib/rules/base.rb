@@ -25,7 +25,7 @@ module Rules
       @stop = false
       @processed_activity = OpenStruct.new({id: activity.id, billable: 0.0,
                                             payable: 0.0,
-                                            regular: 0.0, overtime: 0.0, total: 0.0})
+                                            regular: 0.0, overtime: 0.0, total: activity.total_hours})
 
       @criteria = DEFAULTS.merge(criteria.symbolize_keys)
     end
@@ -34,7 +34,6 @@ module Rules
       @processed_activity[:billable] = @activity.total_hours
       @processed_activity[:payable] = @activity.total_hours
       @processed_activity[:regular] = @activity.total_hours
-      @processed_activity[:total] = @activity.total_hours
 
       @processed_activity
     end

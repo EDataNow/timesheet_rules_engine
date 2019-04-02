@@ -9,7 +9,8 @@ module Processors
                           "IsOvertimeDay",
                           'IsPartialOvertimeDay',
                           'IsPaid',
-                          "isOvertimePaid"
+                          "isOvertimePaid",
+                          "isBilled"
                         ], criteria: nil }
 
     attr_reader :timesheet, :rules

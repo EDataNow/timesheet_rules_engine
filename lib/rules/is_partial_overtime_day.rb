@@ -51,7 +51,6 @@ module Rules
 
         @processed_activity[:regular] = @activity.total_hours - time_difference
         @processed_activity[:overtime] = time_difference
-        @processed_activity[:total] = @activity.total_hours
       end
 
       @processed_activity

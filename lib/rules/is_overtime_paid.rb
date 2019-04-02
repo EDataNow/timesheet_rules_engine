@@ -31,7 +31,6 @@ module Rules
     def process_activity
       if @activity.paid_overtime
         @processed_activity[:payable] = @processed_activity[:overtime]
-        @processed_activity[:total] = @activity.total_hours
       end
 
       @processed_activity

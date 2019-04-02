@@ -39,7 +39,7 @@ module Rules
           paid.processed_activity.overtime = 1.0
 
           expect(subject.payable).to eq(0.0)
-          expect(subject.total).to eq(0.0)
+          expect(subject.total).to eq(1.0)
         end
       end
 

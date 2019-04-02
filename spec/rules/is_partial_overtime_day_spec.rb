@@ -23,7 +23,7 @@ module Rules
           it "should not have all hours in overtime" do
             expect(subject.regular).to eq(0.0)
             expect(subject.overtime).to eq(0.0)
-            expect(subject.total).to eq(0.0)
+            expect(subject.total).to eq(4.0)
           end
 
           it "should not be overtime" do
@@ -40,7 +40,7 @@ module Rules
           it "should not have all hours in overtime" do
             expect(subject.regular).to eq(0.0)
             expect(subject.overtime).to eq(0.0)
-            expect(subject.total).to eq(0.0)
+            expect(subject.total).to eq(4.0)
           end
 
           it "should not be overtime" do
@@ -57,7 +57,7 @@ module Rules
           it "should not have all hours in overtime" do
             expect(subject.regular).to eq(0.0)
             expect(subject.overtime).to eq(0.0)
-            expect(subject.total).to eq(0.0)
+            expect(subject.total).to eq(4.0)
           end
 
           it "should not be overtime" do
@@ -222,7 +222,7 @@ module Rules
               it "should not have any hours" do
                 expect(subject.regular).to eq(0.0)
                 expect(subject.overtime).to eq(0.0)
-                expect(subject.total).to eq(0.0)
+                expect(subject.total).to eq(4.0)
               end
 
               it "should not be overtime" do
@@ -295,7 +295,7 @@ module Rules
         # expect(subject.billable).to eq(0.0)
         # expect(subject.regular).to eq(0.0)
         # expect(subject.overtime).to eq(0.0)
-        # expect(subject.total).to eq(0.0)
+        # expect(subject.total).to eq(4.0)
       end
 
     end

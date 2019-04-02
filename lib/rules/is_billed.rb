@@ -1,7 +1,7 @@
 require 'rules/base'
 
 module Rules
-  class IsPaid < Base
+  class IsBilled < Base
     DEFAULTS = {  minimum_daily_hours: 0.0,
                   maximum_daily_hours: 0.0,
                   minimum_weekly_hours: 0.0,
@@ -29,8 +29,8 @@ module Rules
     end
 
     def process_activity
-      if @activity.paid
-        @processed_activity[:payable] = @activity.total_hours
+      if @activity.billed
+        @processed_activity[:billable] = @activity.total_hours
       end
 
       @processed_activity

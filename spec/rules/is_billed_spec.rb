@@ -1,8 +1,8 @@
 require 'rspec'
-require 'rules/is_paid'
+require 'rules/is_billed'
 
 module Rules
-  describe IsPaid do
+  describe IsBilled do
     describe 'processing' do
       let(:criteria) {
          {
@@ -20,21 +20,21 @@ module Rules
       }
 
       context 'when activity is paid' do
-        let(:paid) { IsPaid.new(nil, OpenStruct.new(attributes_for(:activity)), criteria) }
-        subject { paid.process_activity }
+        let(:billed) { IsBilled.new(nil, OpenStruct.new(attributes_for(:activity)), criteria) }
+        subject { billed.process_activity }
 
         it "should calculate payable and total to be the same as total hours" do
-          expect(subject.payable).to eq(1.0)
+          expect(subject.billable).to eq(1.0)
           expect(subject.total).to eq(1.0)
         end
       end
 
       context 'when activity is not paid' do
-        let(:paid) { IsPaid.new(nil, OpenStruct.new(attributes_for(:activity, paid: false)), criteria) }
-        subject { paid.process_activity }
+        let(:billed) { IsBilled.new(nil, OpenStruct.new(attributes_for(:activity, billed: false)), criteria) }
+        subject { billed.process_activity }
 
         it "should not calculate payable and total to be the same as total hours" do
-          expect(subject.payable).to eq(0.0)
+          expect(subject.billable).to eq(0.0)
           expect(subject.total).to eq(1.0)
         end
       end

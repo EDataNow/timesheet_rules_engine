@@ -40,7 +40,6 @@ module Rules
       if is_overtime_day
         @processed_activity[:regular] = 0.0
         @processed_activity[:overtime] = @activity.total_hours
-        @processed_activity[:total] = @activity.total_hours
       end
 
       @processed_activity
