@@ -11,15 +11,18 @@ module Processors
                           'IsPaid',
                           "isOvertimePaid",
                           "isBilled"
-                        ], criteria: nil }
+                        ], criteria: nil, current_weekly_hours: 0.0 }
 
     attr_reader :timesheet, :rules
+
+    attr_accessor :current_weekly_hours, :current_daily_hours
 
     def initialize(timesheet, options={})
       @result_timesheet = OpenStruct.new({id: timesheet.id, billable: 0.0,
                                         regular: 0.0, payable: 0.0, overtime: 0.0, total: 0.0})
       @timesheet = timesheet
       @options = DEFAULTS.merge(options.symbolize_keys)
+      @current_weekly_hours = @options[:current_weekly_hours]
 
       if @options[:criteria][:scheduled_shift].nil?
         @options[:criteria][:scheduled_shift] = timesheet.shift
@@ -28,7 +31,7 @@ module Processors
 
     def process_timesheet
       @timesheet.activities.map do |activity|
-        base_rule = Rules::Base.new(activity, @options[:criteria])
+        base_rule = Rules::Base.new(activity, @options[:criteria], @current_weekly_hours, @result_timesheet.total)
 
         if @options[:rules].empty?
           base_rule.process_activity
