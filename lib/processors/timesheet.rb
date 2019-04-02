@@ -11,7 +11,8 @@ module Processors
                           'IsPaid',
                           "isOvertimePaid",
                           "isBilled"
-                        ], criteria: nil, current_weekly_hours: 0.0 }
+                        ], criteria: nil, current_weekly_hours: 0.0,
+                           include_rules: [], exclude_rules: [] }
 
     attr_reader :timesheet, :rules
 
@@ -23,6 +24,11 @@ module Processors
       @timesheet = timesheet
       @options = DEFAULTS.merge(options.symbolize_keys)
       @current_weekly_hours = @options[:current_weekly_hours]
+
+      @options[:exclude_rules].each {|er| @options[:rules].reject!{|r| r == er }
+      unless @options[:include_rules].empty?
+        @options[:rules] = @options[:include_rules]
+      end
 
       if @options[:criteria][:scheduled_shift].nil?
         @options[:criteria][:scheduled_shift] = timesheet.shift

@@ -1,7 +1,7 @@
 require 'processors/timesheet'
 
 class TimesheetRulesEngine
-  DEFAULTS = { rules: [] }
+  DEFAULTS = { rules: [], include_rules: [], exclude_rules: [] }
 
   attr_reader :current_weekly_hours
 
