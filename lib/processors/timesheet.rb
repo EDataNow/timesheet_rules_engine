@@ -5,7 +5,12 @@ require 'byebug'
 
 module Processors
   class Timesheet
-    DEFAULTS = { rules: ["IsOvertimeDay", 'IsPartialOvertimeDay', 'IsPaid'], criteria: nil }
+    DEFAULTS = { rules: [
+                          "IsOvertimeDay",
+                          'IsPartialOvertimeDay',
+                          'IsPaid',
+                          "isOvertimePaid"
+                        ], criteria: nil }
 
     attr_reader :timesheet, :rules
 
