@@ -1,4 +1,5 @@
 require 'factory_bot'
+require 'date'
 
 RSpec.configure do |config|
   config.include FactoryBot::Syntax::Methods

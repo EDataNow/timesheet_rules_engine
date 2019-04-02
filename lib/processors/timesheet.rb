@@ -1,11 +1,11 @@
 require 'rules/base'
-require 'rules/is_overtime_day'
+Dir["rules/*.rb"].each {|file| require file }
 require 'ostruct'
 require 'byebug'
 
 module Processors
   class Timesheet
-    DEFAULTS = { rules: ["IsOvertimeDay"], criteria: nil }
+    DEFAULTS = { rules: ["IsOvertimeDay", 'IsPartialOvertimeDay'], criteria: nil }
 
     attr_reader :timesheet, :rules
 
