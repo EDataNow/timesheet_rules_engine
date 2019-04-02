@@ -219,13 +219,13 @@ module Rules
 
               subject { overtime_rule.process_activity }
 
-              it "should have all hours in overtime" do
+              it "should not have any hours" do
                 expect(subject.regular).to eq(0.0)
                 expect(subject.overtime).to eq(0.0)
                 expect(subject.total).to eq(0.0)
               end
 
-              it "should be overtime" do
+              it "should not be overtime" do
                 expect(overtime_rule.is_partial_overtime_day).to be false
               end
             end
