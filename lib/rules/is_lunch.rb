@@ -29,8 +29,12 @@ module Rules
       end
     end
 
+    def check
+      @activity.type == "lunch"
+    end
+
     def process_activity
-      if @activity.type == "lunch"
+      if check
         @processed_activity[:payable] = 0.0
         @processed_activity[:billable] = @activity.total_hours
       end
