@@ -20,6 +20,10 @@ module Processors
                                         regular: 0.0, payable: 0.0, overtime: 0.0, total: 0.0})
       @timesheet = timesheet
       @options = DEFAULTS.merge(options.symbolize_keys)
+
+      if @options[:criteria][:scheduled_shift].nil?
+        @options[:criteria][:scheduled_shift] = timesheet.shift
+      end
     end
 
     def process_timesheet

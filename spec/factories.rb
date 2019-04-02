@@ -5,6 +5,7 @@ FactoryBot.define do
   factory :timesheet_no_activities, class: Hash do
     id { 1 }
     activities { [] }
+    scheduled_shift { OpenStruct.new(started_at: DateTime.parse("2018-01-01 6:00am"), ended_at: DateTime.parse("2018-01-01 4:30pm")) }
   end
 
   factory :timesheet_with_activities, class: Hash do

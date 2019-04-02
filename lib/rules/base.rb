@@ -13,7 +13,8 @@ module Rules
                   holidays_overtime: true,
                   decimal_place: 2,
                   billable_hour: 0.25,
-                  closest_minute: 8.0
+                  closest_minute: 8.0,
+                  scheduled_shift: nil
                 }
 
     attr_reader :activity, :criteria, :processed_activity
