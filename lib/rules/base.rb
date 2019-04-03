@@ -21,14 +21,15 @@ module Rules
 
     attr_accessor :stop, :current_weekly_hours, :current_daily_hours, :left_early
 
-    def initialize(activity, criteria={}, context={current_weekly_hours: 0.0, current_daily_hours: 0.0})
+    def initialize(activity, criteria={}, context={current_weekly_hours: 0.0, current_daily_hours: 0.0,
+                                                   left_early: false, gets_bonus_overtime: true})
       @activity = activity
       @stop = false
       @current_weekly_hours = context[:current_weekly_hours]
       @current_daily_hours = context[:current_daily_hours]
 
       @processed_activity = OpenStruct.new({id: activity.id, billable: 0.0,
-                                            payable: 0.0,
+                                            payable: 0.0, downtime: 0.0,
                                             regular: 0.0, overtime: 0.0, total: activity.total_hours})
 
       @criteria = DEFAULTS.merge(criteria.symbolize_keys)
