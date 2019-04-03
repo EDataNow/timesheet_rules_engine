@@ -12,7 +12,7 @@ module Processors
                           "isOvertimePaid",
                           "isBilled"
                         ], criteria: nil, current_weekly_hours: 0.0,
-                           include_rules: [], exclude_rules: [] }
+                           include_rules: [], exclude_rules: [], left_early: false, bonus_overtime: true }
 
     attr_reader :timesheet, :rules
 
@@ -24,6 +24,7 @@ module Processors
       @timesheet = timesheet
       @options = DEFAULTS.merge(options.symbolize_keys)
       @current_weekly_hours = @options[:current_weekly_hours]
+      @left_early = @options[:left_early]
 
       @options[:exclude_rules].each {|er| @options[:rules].reject!{|r| r == er }}
       unless @options[:include_rules].empty?
@@ -37,7 +38,9 @@ module Processors
 
     def process_timesheet
       @timesheet.activities.map do |activity|
-        base_rule = Rules::Base.new(activity, @options[:criteria], @current_weekly_hours, @result_timesheet.total)
+        base_rule = Rules::Base.new(activity, @options[:criteria], { current_weekly_hours: @current_weekly_hours,
+                                                                     current_daily_hours: @result_timesheet.total,
+                                                                     left_early: @left_early })
 
         if @options[:rules].empty?
           base_rule.process_activity

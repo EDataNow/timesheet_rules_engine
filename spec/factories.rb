@@ -10,6 +10,7 @@ FactoryBot.define do
 
   factory :timesheet_with_activities, class: Hash do
     id { 1 }
+    left_early { false }
     activities { [] }
   end
 

@@ -19,13 +19,13 @@ module Rules
 
     attr_reader :activity, :criteria, :processed_activity
 
-    attr_accessor :stop, :current_weekly_hours, :current_daily_hours
+    attr_accessor :stop, :current_weekly_hours, :current_daily_hours, :left_early
 
-    def initialize(activity, criteria={}, current_weekly_hours=0.0, current_daily_hours=0.0)
+    def initialize(activity, criteria={}, context={current_weekly_hours: 0.0, current_daily_hours: 0.0})
       @activity = activity
       @stop = false
-      @current_weekly_hours = current_weekly_hours
-      @current_daily_hours = current_daily_hours
+      @current_weekly_hours = context[:current_weekly_hours]
+      @current_daily_hours = context[:current_daily_hours]
 
       @processed_activity = OpenStruct.new({id: activity.id, billable: 0.0,
                                             payable: 0.0,
