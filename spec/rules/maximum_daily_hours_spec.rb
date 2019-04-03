@@ -23,7 +23,7 @@ module Rules
       }
 
       context 'when activity is over maximum daily hours' do
-        let(:base) { Base.new(OpenStruct.new(attributes_for(:activity, total_hour: 4.0)), criteria, 40.0, 40.0) }
+        let(:base) { Base.new(OpenStruct.new(attributes_for(:activity, total_hours: 4.0)), criteria, 40.0, 40.0) }
         let(:max) { MaximumDailyHours.new(base) }
         subject { max.check }
 
@@ -32,8 +32,8 @@ module Rules
         end
       end
 
-      context 'when activity is over maximum daily hours' do
-        let(:base) { Base.new(OpenStruct.new(attributes_for(:activity, total_hour: 4.0)), criteria, 25.0, 25.0) }
+      context 'when activity is not over maximum daily hours' do
+        let(:base) { Base.new(OpenStruct.new(attributes_for(:activity, total_hours: 4.0)), criteria, 25.0, 25.0) }
         let(:max) { MaximumDailyHours.new(base) }
         subject { max.check }
 

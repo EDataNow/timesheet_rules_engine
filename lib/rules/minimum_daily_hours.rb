@@ -30,7 +30,7 @@ module Rules
     end
 
     def check
-      (@base.current_daily_hours + @activity.total_hours) < @base.minimum_daily_hours
+      (@base.current_daily_hours + @activity.total_hours) > @base.minimum_daily_hours
     end
   end
 end
