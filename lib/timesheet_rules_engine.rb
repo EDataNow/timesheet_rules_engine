@@ -14,11 +14,11 @@ class TimesheetRulesEngine
   end
 
   def process_timesheets
-    @timesheets.map do |timesheet|
-      if timesheet.left_early && @gets_bonus_overtime
-        @gets_bonus_overtime = false
-      end
+    if @timesheets.any? {|t| t.left_early? }
+      @gets_bonus_overtime = false
+    end
 
+    @timesheets.map do |timesheet|
       timesheet = Processors::Timesheet.new(timesheet, @options.merge({current_weekly_hours: @current_weekly_hours,
                                                                        left_early: timesheet.left_early,
                                                                        gets_bonus_overtime: @gets_bonus_overtime})).process_timesheet

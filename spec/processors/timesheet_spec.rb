@@ -16,7 +16,8 @@ module Processors
             holidays_overtime: true,
             decimal_place: 2,
             billable_hour: 0.25,
-            closest_minute: 8.0
+            closest_minute: 8.0,
+            overtime_reduction: 0.0
           }
       }
 
@@ -44,7 +45,8 @@ module Processors
             holidays_overtime: true,
             decimal_place: 2,
             billable_hour: 0.25,
-            closest_minute: 8.0
+            closest_minute: 8.0,
+            overtime_reduction: 0.0
           }
       }
 
