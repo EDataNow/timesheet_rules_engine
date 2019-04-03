@@ -29,8 +29,12 @@ module Rules
       end
     end
 
+    def check
+      @activity.paid_overtime
+    end
+
     def process_activity
-      if @activity.paid_overtime
+      if check
         @processed_activity[:payable] = @processed_activity[:overtime]
       end
 

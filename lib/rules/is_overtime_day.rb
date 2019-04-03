@@ -46,6 +46,10 @@ module Rules
       @processed_activity
     end
 
+    def check
+      is_overtime_day
+    end
+
     def is_overtime_day
       is_overtime_days? || is_holiday?
     end
