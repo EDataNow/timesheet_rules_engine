@@ -7,6 +7,7 @@ module Processors
   class Overtime
     DEFAULT_OVERTIME_RULES = [
                                'IsOvertimeDay',
+                               'IsLunch',
                                'IsOvertimePaid',
                                'IsOvertimeActivityType',
                                "IsPartialOvertimeDay",
@@ -22,7 +23,9 @@ module Processors
 
     def calculate_hours
       if is_overtime_paid? && is_overtime_activity_type?
-        if is_overtime_day?
+        if is_lunch?
+          @base.processed_activity[:regular] -= @base.activity.total_hours
+        elsif is_overtime_day?
           @base.processed_activity[:overtime] = @base.activity.total_hours
         elsif has_maximum_daily_hours?
           @base.processed_activity[:regular] = @base.maximum_daily_hours - @base.current_daily_hours
@@ -71,6 +74,10 @@ module Processors
 
     def is_overtime_day?
       rule_included?("IsOvertimeDay") ? Rules::IsOvertimeDay.new(@base).check : false
+    end
+
+    def is_lunch?
+      rule_included?("IsLunch") ? Rules::IsLunch.new(@base).check : false
     end
 
     def rule_included?(rule)

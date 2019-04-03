@@ -24,6 +24,21 @@ module Processors
 
       context 'overtime is paid' do
         context 'is an overtime activity type' do
+          context 'when activity is lunch' do
+            let(:context) { {current_weekly_hours: 40.0, current_daily_hours: 0.0} }
+
+            it "should not calculate overtime at all under any circumstances" do
+              base = Rules::Base.new(OpenStruct.new(attributes_for(:activity, type: "lunch", total_hours: 1.0, from: DateTime.parse("2019-04-05 12:00pm"),
+                                                            to: DateTime.parse("2019-04-05 1:00pm"))),
+                                                            criteria, {current_weekly_hours: 40.0, current_daily_hours: 8.0})
+
+              Overtime.new(base).calculate_hours
+
+              expect(base.processed_activity.regular).to eq(-1.0)
+              expect(base.processed_activity.overtime).to eq(0.0)
+            end
+          end
+
           let(:context) { {current_weekly_hours: 40.0, current_daily_hours: 0.0} }
 
           it "should calculate correct overtime hours from started on a regular day but ended on an overtime day while maxed out on daily hours" do
