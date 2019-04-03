@@ -3,7 +3,7 @@ require 'processors/timesheet'
 class TimesheetRulesEngine
   DEFAULTS = { rules: [], include_rules: [], exclude_rules: [] }
 
-  attr_reader :current_weekly_hours, :gets_bonus_overtime
+  attr_reader :current_weekly_hours, :gets_bonus_overtime, :total_overtime
 
   def initialize(timesheets=[], options={})
     @timesheets = timesheets
@@ -24,6 +24,7 @@ class TimesheetRulesEngine
                                                                        gets_bonus_overtime: @gets_bonus_overtime})).process_timesheet
 
       @current_weekly_hours += timesheet.total
+      @total_overtime += timesheet.overtime
 
       timesheet
     end

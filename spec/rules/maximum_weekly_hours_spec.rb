@@ -22,8 +22,8 @@ module Rules
           }
       }
 
-      context 'when activity is over maximum weekly hours' do
-        let(:base) { Base.new(OpenStruct.new(attributes_for(:activity, total_hours: 4.0)), criteria, {current_weekly_hours: 59.0, current_daily_hours: 40.0}) }
+      context 'when current weekly is over maximum weekly hours' do
+        let(:base) { Base.new(OpenStruct.new(attributes_for(:activity, total_hours: 4.0)), criteria, {current_weekly_hours: 61.0, current_daily_hours: 40.0}) }
         let(:max) { MaximumWeeklyHours.new(base) }
         subject { max.check }
 
@@ -32,12 +32,13 @@ module Rules
         end
       end
 
-      context 'when activity is not over maximum weekly hours' do
+      context 'when current weekly is not over maximum weekly hours' do
         let(:base) { Base.new(OpenStruct.new(attributes_for(:activity, total_hours: 4.0)), criteria, {current_weekly_hours: 30.0, current_daily_hours: 25.0}) }
         let(:max) { MaximumWeeklyHours.new(base) }
         subject { max.check }
 
         it "should not be beyond maximum weekly hours" do
+          base.processed_activity.regular = 4.0
           expect(subject).to be false
         end
       end

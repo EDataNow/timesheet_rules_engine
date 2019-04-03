@@ -39,22 +39,34 @@ module Rules
 
     def process_activity
       if is_partial_overtime_day
-        if @partial_overtime_time_field == "from"
-          from = @activity.from
-          to = @activity.to
-
-          time_difference = (to.midnight.to_i - from.to_i) / 3600
-        elsif @partial_overtime_time_field == "to"
-          to = @activity.to
-
-          time_difference = (to.to_i - to.midnight.to_i) / 3600
-        end
+        time_difference = calculate_overtime
 
         @processed_activity[:regular] = @activity.total_hours - time_difference
         @processed_activity[:overtime] = time_difference
       end
 
       @processed_activity
+    end
+
+    def calculate_overtime
+      is_partial_overtime_day
+
+      if @partial_overtime_time_field == "from"
+        from = @activity.from
+        to = @activity.to
+
+        time_difference = (to.midnight.to_i - from.to_i) / 3600
+      elsif @partial_overtime_time_field == "to"
+        to = @activity.to
+
+        time_difference = (to.to_i - to.midnight.to_i) / 3600
+      end
+
+      time_difference
+    end
+
+    def check
+      is_partial_overtime_day
     end
 
     def is_partial_overtime_day

@@ -21,11 +21,26 @@ module Processors
     end
 
     def calculate_hours
-      if is_overtime_paid? && has_minimum_weekly_hours?
+      if is_overtime_paid? && is_overtime_activity_type?
         if is_overtime_day?
           @base.processed_activity[:overtime] = @base.activity.total_hours
+        elsif has_maximum_daily_hours?
+          @base.processed_activity[:regular] = @base.maximum_daily_hours - @base.current_daily_hours
+          @base.processed_activity[:overtime] = @base.activity.total_hours - @base.processed_activity[:regular]
+        elsif is_partial_overtime_day?
+          @base.processed_activity[:overtime] = Rules::IsPartialOvertimeDay.new(@base).calculate_overtime
+          @base.processed_activity[:regular] = @base.activity.total_hours - @base.processed_activity[:overtime]
         end
       end
+      # if !@base.left_early && is_overtime_paid? && has_minimum_weekly_hours? && is_overtime_activity_type?
+      #   if is_overtime_day?
+      #     @base.processed_activity[:overtime] = @base.activity.total_hours
+      #   elsif has_maximum_daily_hours?
+      #     @base.processed_activity[:overtime] = @base.activity.total_hours - (@base.maximum_daily_hours - @base.current_daily_hours)
+      #   elsif is_partial_overtime_day?
+      #     @base.processed_activity[:overtime] = Rules::IsPartialOvertimeDay.new(@base).calculate_overtime
+      #   end
+      # end
 
       # @rules.each do |rule|
       #   "Rules::#{rule}".constantize.send(:new, base_rule).process_activity
@@ -42,8 +57,20 @@ module Processors
       rule_included?("MinimumWeeklyHours") ? Rules::MinimumWeeklyHours.new(@base).check : true
     end
 
+    def is_overtime_activity_type?
+      rule_included?("IsOvertimeActivityType") ? Rules::IsOvertimeActivityType.new(@base).check : true
+    end
+
+    def has_maximum_daily_hours?
+      rule_included?("MaximumDailyHours") ? Rules::MaximumDailyHours.new(@base).check : false
+    end
+
+    def is_partial_overtime_day?
+      rule_included?("IsPartialOvertimeDay") ? Rules::IsPartialOvertimeDay.new(@base).check : false
+    end
+
     def is_overtime_day?
-      rule_included?("IsOvertimeDay") ? Rules::IsOvertimeDay.new(@base).check : true
+      rule_included?("IsOvertimeDay") ? Rules::IsOvertimeDay.new(@base).check : false
     end
 
     def rule_included?(rule)

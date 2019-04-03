@@ -27,6 +27,7 @@ module Rules
       @stop = false
       @current_weekly_hours = context[:current_weekly_hours]
       @current_daily_hours = context[:current_daily_hours]
+      @left_early = context[:left_early]
 
       @processed_activity = OpenStruct.new({id: activity.id, billable: 0.0,
                                             payable: 0.0, downtime: 0.0,

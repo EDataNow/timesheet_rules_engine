@@ -6,6 +6,14 @@ require 'byebug'
 
 module Processors
   class Timesheet
+    DEFAULT_REGULAR_RULES = [
+                            'IsOvertimeDay',
+                            'IsOvertimePaid',
+                            'IsOvertimeActivityType',
+                            "IsPartialOvertimeDay",
+                            "MaximumDailyHours",
+                            "MinimumWeeklyHours"
+                          ]
     DEFAULT_OVERTIME_RULES = [
                             'IsOvertimeDay',
                             'IsOvertimePaid',
@@ -45,7 +53,7 @@ module Processors
 
     attr_reader :timesheet, :rules
 
-    attr_accessor :current_weekly_hours, :current_daily_hours
+    attr_accessor :current_weekly_hours, :current_daily_hours, :total_overtime
 
     def initialize(timesheet, options={})
       @result_timesheet = OpenStruct.new({id: timesheet.id, billable: 0.0, downtime: 0.0,
@@ -78,6 +86,7 @@ module Processors
                                                                      gets_bonus_overtime: @gets_bonus_overtime })
 
         if @options[:rules].present?
+          Overtime.new(base_rule, DEFAULT_REGULAR_RULES.reject{|r| @options[:exclude_rules].include?(r) }).calculate_hours
           Overtime.new(base_rule, DEFAULT_OVERTIME_RULES.reject{|r| @options[:exclude_rules].include?(r) }).calculate_hours
         else
           base_rule.process_activity
