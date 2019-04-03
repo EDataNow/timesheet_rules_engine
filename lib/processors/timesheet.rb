@@ -25,7 +25,7 @@ module Processors
       @options = DEFAULTS.merge(options.symbolize_keys)
       @current_weekly_hours = @options[:current_weekly_hours]
 
-      @options[:exclude_rules].each {|er| @options[:rules].reject!{|r| r == er }
+      @options[:exclude_rules].each {|er| @options[:rules].reject!{|r| r == er }}
       unless @options[:include_rules].empty?
         @options[:rules] = @options[:include_rules]
       end
