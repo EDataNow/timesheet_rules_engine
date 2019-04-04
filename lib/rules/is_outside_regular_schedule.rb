@@ -1,4 +1,6 @@
 require 'rules/base'
+require 'util/time_adjuster'
+require 'byebug'
 
 module Rules
   class IsOutsideRegularSchedule < Base
@@ -25,19 +27,38 @@ module Rules
         @processed_activity = base.processed_activity
         @partial_overtime_time_field = nil
         @base = base
-
-        assign_partial_field
       else
         super(activity, criteria)
       end
+
+      new_dates = Util::TimeAdjuster.new(@activity.from, @activity.to).process_dates
+
+      @from = new_dates.from
+      @to = new_dates.to
+      assign_partial_field
     end
 
     def check
-      @partial_overtime_time_field.nil?
+      !@partial_overtime_time_field.nil?
     end
 
     def calculate_hours
+      started_at = scheduled_shift.started_at
+      ended_at = scheduled_shift.ended_at
 
+      if @partial_overtime_time_field == "both_started_at"
+        @processed_activity[:overtime] = @activity.total_hours
+      elsif @partial_overtime_time_field == "from_started_at"
+        @processed_activity[:regular] = ((@to.to_i - started_at.to_i) / 3600.0).round(decimal_place)
+        @processed_activity[:overtime] = ((started_at.to_i - @from.to_i) / 3600.0).round(decimal_place)
+      elsif @partial_overtime_time_field == "both_ended_at"
+        @processed_activity[:overtime] = @activity.total_hours
+      elsif @partial_overtime_time_field == "to_ended_at"
+        @processed_activity[:regular] = ((ended_at.to_i - @from.to_i) / 3600.0).round(decimal_place)
+        @processed_activity[:overtime] = ((@to.to_i - ended_at.to_i) / 3600.0).round(decimal_place)
+      else
+        @processed_activity[:regular] = @activity.total_hours
+      end
     end
 
     def process_activity
@@ -49,12 +70,18 @@ module Rules
     private
 
     def assign_partial_field
-      if base.activity.from < base.scheduled_shift.started_at
-      elsif base.activity.from < base.scheduled_shift.started_at
-      end
+      started_at = scheduled_shift.started_at
+      ended_at = scheduled_shift.ended_at
 
-      base.scheduled_shift.started_at
-      base.scheduled_shift.ended_at
+      if @to < started_at
+        @partial_overtime_time_field = "both_started_at"
+      elsif @from < started_at
+        @partial_overtime_time_field = "from_started_at"
+      elsif @from > ended_at
+        @partial_overtime_time_field = "both_ended_at"
+      elsif @to > ended_at
+        @partial_overtime_time_field = "to_ended_at"
+      end
     end
   end
 end
