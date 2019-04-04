@@ -49,6 +49,10 @@ module Rules
     private
 
     def assign_partial_field
+      if base.activity.from < base.scheduled_shift.started_at
+      elsif base.activity.from < base.scheduled_shift.started_at
+      end
+
       base.scheduled_shift.started_at
       base.scheduled_shift.ended_at
     end
