@@ -1,5 +1,5 @@
 require 'rules/base'
-require 'processors/overtime'
+require 'processors/activity'
 Dir["rules/*.rb"].each {|file| require file }
 require 'ostruct'
 require 'byebug'
@@ -78,7 +78,7 @@ module Processors
                                                                      gets_bonus_overtime: @gets_bonus_overtime })
 
         if @options[:rules].present?
-          Overtime.new(base_rule, DEFAULT_OVERTIME_RULES.reject{|r| @options[:exclude_rules].include?(r) }).calculate_hours
+          Activity.new(base_rule, DEFAULT_OVERTIME_RULES.reject{|r| @options[:exclude_rules].include?(r) }).calculate_hours
         else
           base_rule.process_activity
         end
