@@ -10,6 +10,7 @@ module Processors
                                'IsLunch',
                                'IsOvertimePaid',
                                'IsOvertimeActivityType',
+                               'IsOutsideRegularSchedule',
                                "IsPartialOvertimeDay",
                                "MaximumDailyHours",
                                "MinimumWeeklyHours"
@@ -27,13 +28,21 @@ module Processors
           @base.processed_activity[:regular] -= @base.activity.total_hours
         elsif is_overtime_day?
           @base.processed_activity[:overtime] = @base.activity.total_hours
-        elsif has_maximum_daily_hours?
-          @base.processed_activity[:regular] = @base.maximum_daily_hours - @base.current_daily_hours
-          @base.processed_activity[:overtime] = @base.activity.total_hours - @base.processed_activity[:regular]
+        # elsif has_maximum_daily_hours?
+        #   @base.processed_activity[:regular] = @base.maximum_daily_hours - @base.current_daily_hours
+        #   @base.processed_activity[:overtime] = @base.activity.total_hours - @base.processed_activity[:regular]
         elsif is_partial_overtime_day?
           @base.processed_activity[:overtime] = Rules::IsPartialOvertimeDay.new(@base).calculate_overtime
           @base.processed_activity[:regular] = @base.activity.total_hours - @base.processed_activity[:overtime]
+        elsif is_outside_regular_schedule?
+          hours = Rules::IsOutsideRegularSchedule.new(@base).calculate_hours
+          @base.processed_activity[:overtime] = hours.overtime
+          @base.processed_activity[:regular] = hours.regular
+        else
+          @base.processed_activity[:regular] = @base.activity.total_hours
         end
+      else
+        @base.processed_activity[:regular] = @base.activity.total_hours
       end
       # if !@base.left_early && is_overtime_paid? && has_minimum_weekly_hours? && is_overtime_activity_type?
       #   if is_overtime_day?
@@ -74,6 +83,10 @@ module Processors
 
     def is_overtime_day?
       rule_included?("IsOvertimeDay") ? Rules::IsOvertimeDay.new(@base).check : false
+    end
+
+    def is_outside_regular_schedule?
+      rule_included?("IsOutsideRegularSchedule") ? Rules::IsOutsideRegularSchedule.new(@base).check : false
     end
 
     def is_lunch?
