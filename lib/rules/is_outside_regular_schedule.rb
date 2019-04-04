@@ -56,8 +56,6 @@ module Rules
       elsif @partial_overtime_time_field == "to_ended_at"
         @processed_activity[:regular] = ((ended_at.to_i - @from.to_i) / 3600.0).round(decimal_place)
         @processed_activity[:overtime] = ((@to.to_i - ended_at.to_i) / 3600.0).round(decimal_place)
-      else
-        @processed_activity[:regular] = @activity.total_hours
       end
     end
 

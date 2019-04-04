@@ -95,11 +95,10 @@ module Rules
           expect(schedule.check).to be false
         end
 
-        it "should calculate the right overtime and regular hours" do
-          schedule.calculate_hours
+        it "should not calculate anything for the activity" do
           subject = schedule.process_activity
 
-          expect(subject.regular).to eq(10.5)
+          expect(subject.regular).to eq(0.0)
           expect(subject.overtime).to eq(0.0)
         end
       end
