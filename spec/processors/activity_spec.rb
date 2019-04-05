@@ -120,7 +120,8 @@ module Processors
 
               Activity.new(base).calculate_hours
 
-              expect(base.processed_activity.regular).to eq(-1.0)
+              expect(base.processed_activity.regular).to eq(0.0)
+              expect(base.processed_activity.lunch).to eq(1.0)
               expect(base.processed_activity.overtime).to eq(0.0)
             end
           end

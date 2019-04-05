@@ -7,13 +7,15 @@ require 'byebug'
 module Processors
   class Timesheet
     DEFAULT_OVERTIME_RULES = [
-                            'IsOvertimeDay',
-                            'IsOvertimePaid',
-                            'IsOvertimeActivityType',
-                            "IsPartialOvertimeDay",
-                            "MaximumDailyHours",
-                            "MinimumWeeklyHours"
-                          ]
+                               'IsOvertimeDay',
+                               'IsLunch',
+                               'IsOvertimePaid',
+                               'IsOvertimeActivityType',
+                               'IsOutsideRegularSchedule',
+                               "IsPartialOvertimeDay",
+                               "MaximumDailyHours",
+                               "MinimumWeeklyHours"
+                             ]
     DEFAULTS = {
                   rules: [
                             "IsOvertimeDay",
@@ -40,7 +42,7 @@ module Processors
                   include_rules: [],
                   exclude_rules: [],
                   left_early: false,
-                  gets_bonus_overtime: true
+                  # gets_bonus_overtime: true
                 }
 
     attr_reader :timesheet, :rules
@@ -48,7 +50,7 @@ module Processors
     attr_accessor :current_weekly_hours, :current_daily_hours, :total_overtime
 
     def initialize(timesheet, options={})
-      @result_timesheet = OpenStruct.new({id: timesheet.id, billable: 0.0, downtime: 0.0,
+      @result_timesheet = OpenStruct.new({id: timesheet.id, billable: 0.0, downtime: 0.0, lunch: 0.0,
                                         regular: 0.0, payable: 0.0, overtime: 0.0, total: 0.0})
       @timesheet = timesheet
       @options = DEFAULTS.merge(options.symbolize_keys)
@@ -61,9 +63,9 @@ module Processors
         @options[:rules] = @options[:include_rules]
       end
 
-      if @gets_bonus_overtime
-        @options[:criteria][:minimum_weekly_hours] -= @options[:criteria][:overtime_reduction]
-      end
+      # if @gets_bonus_overtime
+      #   @options[:criteria][:minimum_weekly_hours] -= @options[:criteria][:overtime_reduction]
+      # end
 
       if @options[:criteria][:scheduled_shift].nil?
         @options[:criteria][:scheduled_shift] = timesheet.shift
@@ -71,7 +73,7 @@ module Processors
     end
 
     def process_timesheet
-      @timesheet.activities.map do |activity|
+      activities = @timesheet.activities.map do |activity|
         base_rule = Rules::Base.new(activity, @options[:criteria], { current_weekly_hours: @current_weekly_hours,
                                                                      current_daily_hours: @result_timesheet.total,
                                                                      left_early: @left_early,
@@ -95,7 +97,7 @@ module Processors
         #   end
         # end
 
-        [:billable, :regular, :payable, :overtime, :downtime, :total].each do |attribute|
+        [:billable, :regular, :payable, :overtime, :downtime, :lunch, :total].each do |attribute|
           @result_timesheet[attribute] += base_rule.processed_activity[attribute]
         end
 

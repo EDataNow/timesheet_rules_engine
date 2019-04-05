@@ -25,7 +25,7 @@ module Processors
     def calculate_hours
       if is_overtime_paid? && is_overtime_activity_type?
         if is_lunch?
-          @base.processed_activity[:regular] -= @base.activity.total_hours
+          @base.processed_activity[:lunch] = @base.activity.total_hours
         elsif is_overtime_day?
           @base.processed_activity[:overtime] = @base.activity.total_hours
         elsif is_partial_overtime_day?
