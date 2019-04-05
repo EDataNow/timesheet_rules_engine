@@ -24,6 +24,8 @@ module Processors
                         }
                       }
 
+
+
       context 'overtime is not paid' do
         it "should have all hours in regular" do
           base = Rules::Base.new(OpenStruct.new(attributes_for(:activity, total_hours: 3.0, paid_overtime: false, from: DateTime.parse("2018-01-03 6:01am"),
@@ -82,6 +84,41 @@ module Processors
 
                 expect(base.processed_activity.regular).to eq(3.0)
                 expect(base.processed_activity.overtime).to eq(0.0)
+              end
+            end
+
+            context 'when activity is a partially overtime' do
+              it "should have part of the hours in regular and part in overtime when it starts in overtime and goes to regular" do
+                base = Rules::Base.new(OpenStruct.new(attributes_for(:activity, total_hours: 4.0, from: DateTime.parse("2018-01-01 11:01pm"),
+                                                              to: DateTime.parse("2018-01-02 3:05am"))),
+                                                              criteria)
+
+                Activity.new(base).calculate_hours
+
+                expect(base.processed_activity.regular).to eq(3.0)
+                expect(base.processed_activity.overtime).to eq(1.0)
+              end
+
+              it "should have part of the hours in regular and part in overtime when it starts in regular and ends in overtime" do
+                base = Rules::Base.new(OpenStruct.new(attributes_for(:activity, total_hours: 3.0, from: DateTime.parse("2019-04-18 10:01pm"),
+                                                              to: DateTime.parse("2019-04-19 1:05am"))),
+                                                              criteria)
+
+                Activity.new(base).calculate_hours
+
+                expect(base.processed_activity.regular).to eq(2.0)
+                expect(base.processed_activity.overtime).to eq(1.0)
+              end
+
+              it "should have all hours in overtime when you start on a weekend and end in on a holiday" do
+                base = Rules::Base.new(OpenStruct.new(attributes_for(:activity, total_hours: 3.0, from: DateTime.parse("2017-12-31 10:01pm"),
+                                                              to: DateTime.parse("2018-01-01 1:05am"))),
+                                                              criteria)
+
+                Activity.new(base).calculate_hours
+
+                expect(base.processed_activity.regular).to eq(0.0)
+                expect(base.processed_activity.overtime).to eq(3.0)
               end
             end
 

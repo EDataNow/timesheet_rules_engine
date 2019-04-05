@@ -1,4 +1,5 @@
 require 'rules/base'
+require 'util/time_adjuster'
 require 'holidays'
 require 'holidays/core_extensions/date'
 require 'active_support/all'
@@ -35,6 +36,15 @@ module Rules
       else
         super(activity, criteria)
       end
+
+      process_dates
+    end
+
+    def process_dates
+      new_dates = Util::TimeAdjuster.new(@activity.from, @activity.to).process_dates
+
+      @from = new_dates.from
+      @to = new_dates.to
     end
 
     def process_activity
@@ -52,14 +62,11 @@ module Rules
       is_partial_overtime_day
 
       if @partial_overtime_time_field == "from"
-        from = @activity.from
-        to = @activity.to
-
-        time_difference = (to.midnight.to_i - from.to_i) / 3600
+        time_difference = ((@to.midnight.to_i - @from.to_i) / 3600.0).round(decimal_place)
       elsif @partial_overtime_time_field == "to"
-        to = @activity.to
-
-        time_difference = (to.to_i - to.midnight.to_i) / 3600
+        time_difference = ((@to.to_i - @to.midnight.to_i) / 3600.0).round(decimal_place)
+      elsif @partial_overtime_time_field == "both"
+        time_difference = @activity.total_hours
       end
 
       time_difference
@@ -70,12 +77,14 @@ module Rules
     end
 
     def is_partial_overtime_day
-      is_from_overtime_day = overtime_days.any? {|d| @activity.from.send("#{d}?") }
+      is_from_overtime_day = overtime_days.any? {|d| @from.send("#{d}?") }
       is_from_holiday = is_holiday?("from")
       is_to_holiday = is_holiday?("to")
-      is_to_overtime_day = overtime_days.any? {|d| @activity.to.send("#{d}?") }
+      is_to_overtime_day = overtime_days.any? {|d| @to.send("#{d}?") }
 
-      if is_from_overtime_day || is_from_holiday
+      if (is_to_overtime_day && is_from_holiday) || (is_from_overtime_day && is_to_holiday)
+        @partial_overtime_time_field = "both"
+      elsif is_from_overtime_day || is_from_holiday
         @partial_overtime_time_field = "from"
       elsif is_to_overtime_day || is_to_holiday
         @partial_overtime_time_field = "to"
@@ -87,15 +96,15 @@ module Rules
     private
 
     def is_overtime_days?
-      overtime_days.any? {|d| @activity.from.send("#{d}?") } && overtime_days.any? {|d| @activity.to.send("#{d}?") }
+      overtime_days.any? {|d| @from.send("#{d}?") } && overtime_days.any? {|d| @to.send("#{d}?") }
     end
 
     def is_holiday?(field_to_check=nil)
       if holidays_overtime
         if field_to_check
-          @activity.send(field_to_check).holiday?(:ca_on)
+          self.instance_variable_get("@#{field_to_check}").holiday?(:ca_on)
         else
-          @activity.from.holiday?(:ca_on) && @activity.to.holiday?(:ca_on)
+          @from.holiday?(:ca_on) && @to.holiday?(:ca_on)
         end
       else
         false

@@ -7,7 +7,8 @@ module Util
   class TimeAdjuster
     DEFAULTS = {
                   billable_hour: 0.25,
-                  closest_minute: 8.0
+                  closest_minute: 8.0,
+                  decimal_place: 2
                }
 
     def initialize(from, to, options={})
@@ -24,6 +25,11 @@ module Util
       new_to = process_date(@to)
 
       OpenStruct.new({from: new_from, to: new_to})
+    end
+
+    def hours_difference
+      new_dates = process_dates
+      ((new_dates.new_to.to_i - new_dates.new_from.to_i) / 3600.0).round(decimal_place)
     end
 
     def method_missing(method, *args)

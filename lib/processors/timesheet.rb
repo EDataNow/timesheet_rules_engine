@@ -6,7 +6,7 @@ require 'byebug'
 
 module Processors
   class Timesheet
-    DEFAULT_OVERTIME_RULES = [
+    DEFAULT_ACTIVITY_RULES = [
                                'IsOvertimeDay',
                                'IsLunch',
                                'IsOvertimePaid',
@@ -18,11 +18,7 @@ module Processors
                              ]
     DEFAULTS = {
                   rules: [
-                            "IsOvertimeDay",
-                            'IsPartialOvertimeDay',
-                            'IsPaid',
-                            "isOvertimePaid",
-                            "isBilled"
+                            'MinimumDailyHours'
                          ],
                   criteria: {
                               minimum_daily_hours: 0.0,
@@ -51,11 +47,11 @@ module Processors
 
     def initialize(timesheet, options={})
       @result_timesheet = OpenStruct.new({id: timesheet.id, billable: 0.0, downtime: 0.0, lunch: 0.0,
-                                        regular: 0.0, payable: 0.0, overtime: 0.0, total: 0.0})
+                                        regular: 0.0, minimum_regular: 0.0, payable: 0.0, overtime: 0.0, total: 0.0})
       @timesheet = timesheet
       @options = DEFAULTS.merge(options.symbolize_keys)
       @current_weekly_hours = @options[:current_weekly_hours]
-      @left_early = @options[:left_early]
+      @left_early = timesheet.left_early
       @gets_bonus_overtime = @options[:gets_bonus_overtime]
 
       @options[:exclude_rules].each {|er| @options[:rules].reject!{|r| r == er }}
@@ -80,7 +76,7 @@ module Processors
                                                                      gets_bonus_overtime: @gets_bonus_overtime })
 
         if @options[:rules].present?
-          Activity.new(base_rule, DEFAULT_OVERTIME_RULES.reject{|r| @options[:exclude_rules].include?(r) }).calculate_hours
+          Activity.new(base_rule, DEFAULT_ACTIVITY_RULES.reject{|r| @options[:exclude_rules].include?(r) }).calculate_hours
         else
           base_rule.process_activity
         end
@@ -104,7 +100,28 @@ module Processors
         base_rule.processed_activity
       end
 
+      if qualifies_for_minimum_after_leaving_early?
+        @result_timesheet[:minimum_regular] = @options[:criteria][:minimum_daily_hours]
+      end
+
       @result_timesheet
     end
+
+    def has_minimum_daily_hours?
+      rule_included?("MinimumDailyHours") ? Rules::MinimumDailyHours.check(@result_timesheet.total, @options[:criteria][:minimum_daily_hours]) : true
+    end
+
+    def left_early_but_under_minimum?
+      @left_early && !has_minimum_daily_hours?
+    end
+
+    def qualifies_for_minimum_after_leaving_early?
+      !@left_early && !has_minimum_daily_hours?
+    end
+
+    def rule_included?(rule)
+      @options[:rules].include?(rule)
+    end
+
   end
 end

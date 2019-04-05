@@ -23,9 +23,7 @@ module Rules
       }
 
       context 'when activity is goes beyond minimum daily hours' do
-        let(:base) { Base.new(OpenStruct.new(attributes_for(:activity, total_hours: 4.0)), criteria, {current_weekly_hours: 59.0, current_daily_hours: 4.0}) }
-        let(:min) { MinimumDailyHours.new(base) }
-        subject { min.check }
+        subject { MinimumDailyHours.check(4.0, 3.0) }
 
         it "should be beyond minimum daily hours" do
           expect(subject).to be true
@@ -33,9 +31,7 @@ module Rules
       end
 
       context 'when activity is not over minimum daily hours' do
-        let(:base) { Base.new(OpenStruct.new(attributes_for(:activity, total_hours: 1.0)), criteria, {current_weekly_hours: 30.0, current_daily_hours: 1.0}) }
-        let(:min) { MinimumDailyHours.new(base) }
-        subject { min.check }
+        subject { MinimumDailyHours.check(1.0, 3.0) }
 
         it "should not be beyond minimum daily hours" do
           expect(subject).to be false

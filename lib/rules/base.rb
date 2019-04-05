@@ -30,7 +30,7 @@ module Rules
       @left_early = context[:left_early]
 
       @processed_activity = OpenStruct.new({id: activity.id, billable: 0.0,
-                                            payable: 0.0, downtime: 0.0, lunch: 0.0,
+                                            payable: 0.0, downtime: 0.0, lunch: 0.0, minimum_regular: 0.0,
                                             regular: 0.0, overtime: 0.0, total: activity.total_hours})
 
       @criteria = DEFAULTS.merge(criteria.symbolize_keys)
