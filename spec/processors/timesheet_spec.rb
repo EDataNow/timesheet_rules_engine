@@ -133,6 +133,8 @@ module Processors
           result = Timesheet.new(OpenStruct.new(attributes_for(:timesheet_with_activities, activities: activities)), {criteria: criteria}).process_timesheet
 
           expect(result.regular).to eq(7.0)
+          expect(result.lunch).to eq(1.0)
+          expect(result.total).to eq(9.0)
           expect(result.overtime).to eq(1.0)
         end
 

@@ -2,7 +2,7 @@ require 'processors/timesheet'
 require 'processors/timesheets'
 
 class TimesheetRulesEngine
-  DEFAULTS = { shift: nil, rules: [], criteria: [], include_rules: [], exclude_rules: [] }
+  DEFAULTS = { shift: nil, criteria: [], include_rules: [], exclude_rules: [] }
 
   attr_reader :current_weekly_hours, :gets_bonus_overtime, :total_overtime, :total_hours, :left_early
 
@@ -18,7 +18,7 @@ class TimesheetRulesEngine
   end
 
   def process_timesheets
-    if @timesheets.any? {|t| t.left_early? }
+    if @timesheets.any? {|t| t.left_early }
       @gets_bonus_overtime = false
       @left_early = true
     end

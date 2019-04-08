@@ -74,7 +74,7 @@ module Processors
       end
 
       if qualifies_for_overtime_after_leaving_early?
-        @result_timesheets[:overtime] = current_weekly_hours - @options[:criteria][:minimum_weekly_hours]
+        @result_timesheets[:overtime] = @result_timesheets[:overtime] - (@options[:criteria][:minimum_weekly_hours] - @result_timesheets[:regular])
         @result_timesheets[:regular] = @options[:criteria][:minimum_weekly_hours]
       elsif left_early_but_under_minimum?
         @result_timesheets[:regular] += @result_timesheets[:overtime]

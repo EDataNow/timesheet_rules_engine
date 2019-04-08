@@ -100,7 +100,6 @@ module Processors
         end
 
         # @result_timesheet[:regular] -= @result_timesheet[:lunch]
-
         base_rule.processed_activity
       end
 
