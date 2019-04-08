@@ -200,11 +200,10 @@ module Processors
 
     describe 'no rules and no activities' do
       subject { Timesheet.new(OpenStruct.new(attributes_for(:timesheet_no_activities)),
-                                            {criteria: criteria}).process_timesheet }
+                                            {no_rules: true, criteria: criteria}).process_timesheet }
 
       it 'should contain proper defaults' do
         expect(subject.id).to eq(1)
-        expect(subject.billable).to eq(0.0)
         expect(subject.regular).to eq(0.0)
         expect(subject.overtime).to eq(0.0)
         expect(subject.total).to eq(0.0)
@@ -221,11 +220,10 @@ module Processors
       }
 
       subject { Timesheet.new(OpenStruct.new(attributes_for(:timesheet_with_activities, activities: activities)),
-                                            {rules: [], criteria: criteria}).process_timesheet }
+                                            {no_rules: true, criteria: criteria}).process_timesheet }
 
       it 'should calculate billable, regular and total to be the same' do
         expect(subject.id).to eq(1)
-        expect(subject.billable).to eq(3.0)
         expect(subject.regular).to eq(3.0)
         expect(subject.overtime).to eq(0.0)
         expect(subject.total).to eq(3.0)

@@ -5,7 +5,7 @@ require 'ostruct'
 
 module Processors
   class Activity
-    DEFAULT_OVERTIME_RULES = [
+    DEFAULT_ACTIVITY_RULES = [
                                'IsOvertimeDay',
                                'IsLunch',
                                'IsOvertimePaid',
@@ -19,7 +19,7 @@ module Processors
 
     def initialize(base, rules=[])
       @base = base
-      @rules = rules.empty? ? DEFAULT_OVERTIME_RULES : rules
+      @rules = rules.empty? ? DEFAULT_ACTIVITY_RULES : rules
     end
 
     def calculate_hours

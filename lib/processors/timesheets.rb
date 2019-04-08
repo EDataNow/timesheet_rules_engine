@@ -61,7 +61,7 @@ module Processors
       @processed_timesheets = processed_timesheets
       rules = @options[:rules]
 
-      @rules = rules.empty? ? DEFAULT_OVERTIME_RULES : rules
+      @rules = rules.empty? ? DEFAULT_WEEKLY_RULES : rules
     end
 
     def process_timesheets

@@ -37,6 +37,7 @@ module Processors
                   current_weekly_hours: 0.0,
                   include_rules: [],
                   exclude_rules: [],
+                  no_rules: false,
                   left_early: false,
                   # gets_bonus_overtime: true
                 }
@@ -63,7 +64,7 @@ module Processors
       #   @options[:criteria][:minimum_weekly_hours] -= @options[:criteria][:overtime_reduction]
       # end
 
-      if @options[:criteria][:scheduled_shift].nil?
+      if timesheet.shift
         @options[:criteria][:scheduled_shift] = timesheet.shift
       end
     end
@@ -75,14 +76,15 @@ module Processors
                                                                      left_early: @left_early,
                                                                      gets_bonus_overtime: @gets_bonus_overtime })
 
-        if @options[:rules].present?
-          Activity.new(base_rule, DEFAULT_ACTIVITY_RULES.reject{|r| @options[:exclude_rules].include?(r) }).calculate_hours
-        else
+        if @options[:no_rules]
           base_rule.process_activity
+        else
+          Activity.new(base_rule, DEFAULT_ACTIVITY_RULES.reject{|r| @options[:exclude_rules].include?(r) }).calculate_hours
         end
 
+
         # if @options[:rules].empty?
-        #   base_rule.process_activity
+        #
         # else
         #   @options[:rules].each do |rule|
         #     "Rules::#{rule}".constantize.send(:new, base_rule).process_activity
@@ -96,6 +98,8 @@ module Processors
         [:billable, :regular, :payable, :overtime, :downtime, :lunch, :total].each do |attribute|
           @result_timesheet[attribute] += base_rule.processed_activity[attribute]
         end
+
+        # @result_timesheet[:regular] -= @result_timesheet[:lunch]
 
         base_rule.processed_activity
       end

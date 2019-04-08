@@ -148,15 +148,15 @@ module Processors
         it "should calculate correct regular and overtime hours when the user worked overtime on a couple of scheduled days" do
           processed_timesheets = [
             OpenStruct.new({id: 1, billable: 0.0, downtime: 0.0, lunch: 1.0, regular: 7.0,
-                                    minimum_regular: 0.0, payable: 0.0, overtime: 2.0, total: 0.0}),
+                                    minimum_regular: 0.0, payable: 0.0, overtime: 2.0, total: 8.0}),
             OpenStruct.new({id: 1, billable: 0.0, downtime: 0.0, lunch: 1.0, regular: 7.0,
-                                    minimum_regular: 0.0, payable: 0.0, overtime: 0.0, total: 0.0}),
+                                    minimum_regular: 0.0, payable: 0.0, overtime: 0.0, total: 8.0}),
             OpenStruct.new({id: 1, billable: 0.0, downtime: 0.0, lunch: 1.0, regular: 7.0,
-                                    minimum_regular: 0.0, payable: 0.0, overtime: 0.0, total: 0.0}),
+                                    minimum_regular: 0.0, payable: 0.0, overtime: 0.0, total: 8.0}),
             OpenStruct.new({id: 1, billable: 0.0, downtime: 0.0, lunch: 1.0, regular: 7.0,
-                                    minimum_regular: 0.0, payable: 0.0, overtime: 0.0, total: 0.0}),
+                                    minimum_regular: 0.0, payable: 0.0, overtime: 0.0, total: 8.0}),
             OpenStruct.new({id: 1, billable: 0.0, downtime: 0.0, lunch: 1.0, regular: 7.0,
-                                    minimum_regular: 0.0, payable: 0.0, overtime: 3.0, total: 0.0}),
+                                    minimum_regular: 0.0, payable: 0.0, overtime: 3.0, total: 8.0}),
           ]
 
           result = Timesheets.new(processed_timesheets, {criteria: criteria}).process_timesheets
