@@ -40,7 +40,7 @@ module Processors
           }
         }
 
-        it "should calculate to have all hours in overtime except training" do
+        it "should calculate to have all hours in overtime except training and lunch" do
           activities = [
             OpenStruct.new(attributes_for(:activity, type: "shift_prep", from: DateTime.parse("2019-04-06 7:00am"),
                                                                     to: DateTime.parse("2019-04-06 7:23am"), total_hours: 0.50)),

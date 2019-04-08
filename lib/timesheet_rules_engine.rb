@@ -28,17 +28,13 @@ class TimesheetRulesEngine
                                                                        left_early: timesheet.left_early,
                                                                        gets_bonus_overtime: @gets_bonus_overtime})).process_timesheet
 
-      @current_weekly_hours += timesheet.regular
-      @total_overtime += timesheet.overtime
-      @total_hours += timesheet.total
+      @current_weekly_hours += timesheet.total
 
       timesheet
     end
 
-    Processors::Timesheets.new(@timesheets, @options, { left_early: @left_early,
-                                                        current_weekly_hours: @current_weekly_hours,
-                                                        gets_bonus_overtime: @gets_bonus_overtime,
-                                                        total_overtime: @total_overtime,
-                                                        total_hours: @total_hours }).process_timesheets
+    Processors::Timesheets.new(@result_timesheets, @options.merge({ left_early: @left_early,
+                                                             current_weekly_hours: @current_weekly_hours,
+                                                              gets_bonus_overtime: @gets_bonus_overtime })).process_timesheets
   end
 end

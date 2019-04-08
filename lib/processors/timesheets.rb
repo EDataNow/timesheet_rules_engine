@@ -5,6 +5,10 @@ require 'ostruct'
 
 module Processors
   class Timesheets
+    DEFAULT_WEEKLY_RULES = [
+                               "MinimumWeeklyHours"
+                             ]
+
     DEFAULTS = {
                   rules: DEFAULT_WEEKLY_RULES,
                   criteria: {
@@ -28,92 +32,70 @@ module Processors
                   gets_bonus_overtime: true
                 }
 
-    DEFAULT_WEEKLY_RULES = [
-                               'IsOvertimeDay',
-                               'IsLunch',
-                               'IsOvertimePaid',
-                               'IsOvertimeActivityType',
-                               "IsPartialOvertimeDay",
-                               "MaximumDailyHours",
-                               "MinimumWeeklyHours"
-                             ]
-
     attr_reader :processed_timesheets, :rules, :gets_bonus_overtime
 
     attr_accessor :current_weekly_hours, :current_daily_hours, :total_overtime
 
-    def initialize(processed_timesheets, options, context)
+    def initialize(processed_timesheets, options)
       @options = DEFAULTS.merge(options.symbolize_keys)
+      @result_timesheets = OpenStruct.new({billable: 0.0, downtime: 0.0, lunch: 0.0,
+                                        regular: 0.0, minimum_regular: 0.0, payable: 0.0, overtime: 0.0, total: 0.0})
 
       @current_weekly_hours = @options[:current_weekly_hours]
       @left_early = @options[:left_early]
-      @gets_bonus_overtime = @options[:gets_bonus_overtime]
+      # @gets_bonus_overtime = @options[:gets_bonus_overtime]
 
       @options[:exclude_rules].each {|er| @options[:rules].reject!{|r| r == er }}
       unless @options[:include_rules].empty?
         @options[:rules] = @options[:include_rules]
       end
 
-      if @gets_bonus_overtime
-        @options[:criteria][:minimum_weekly_hours] -= @options[:criteria][:overtime_reduction]
-      end
+      # if @gets_bonus_overtime
+      #   @options[:criteria][:minimum_weekly_hours] -= @options[:criteria][:overtime_reduction]
+      # end
 
       if @options[:criteria][:scheduled_shift].nil?
         @options[:criteria][:scheduled_shift] = @options[:shift]
       end
 
-      @process_timesheets = process_timesheets
+      @processed_timesheets = processed_timesheets
       rules = @options[:rules]
 
       @rules = rules.empty? ? DEFAULT_OVERTIME_RULES : rules
     end
 
     def process_timesheets
-      # if !@base.left_early && is_overtime_paid? && has_minimum_weekly_hours? && is_overtime_activity_type?
-      #   if is_overtime_day?
-      #     @base.processed_activity[:overtime] = @base.activity.total_hours
-      #   elsif has_maximum_daily_hours?
-      #     @base.processed_activity[:overtime] = @base.activity.total_hours - (@base.maximum_daily_hours - @base.current_daily_hours)
-      #   elsif is_partial_overtime_day?
-      #     @base.processed_activity[:overtime] = Rules::IsPartialOvertimeDay.new(@base).calculate_overtime
-      #   end
-      # end
+      @processed_timesheets.each do |processed_timesheet|
+        [:billable, :regular, :payable, :overtime, :downtime, :lunch, :total].each do |attribute|
+          @result_timesheets[attribute] += processed_timesheet[attribute]
+        end
 
-      # @rules.each do |rule|
-      #   "Rules::#{rule}".constantize.send(:new, base_rule).process_activity
-      # end
+        @result_timesheets[:regular] += processed_timesheet[:minimum_regular]
+      end
 
-      { regular: 0.0, total: 0.0, overtime: 0.0, billable: 0.0, payable: 0.0 }
+      if qualifies_for_overtime_after_leaving_early?
+        @result_timesheets[:overtime] = current_weekly_hours - @options[:criteria][:minimum_weekly_hours]
+        @result_timesheets[:regular] = @options[:criteria][:minimum_weekly_hours]
+      elsif left_early_but_under_minimum?
+        @result_timesheets[:regular] += @result_timesheets[:overtime]
+        @result_timesheets[:overtime] = 0.0
+      end
+
+      @result_timesheets
     end
 
     private
 
-    def is_overtime_paid?
-      rule_included?("IsOvertimePaid") ? Rules::IsOvertimePaid.new(@base).check : true
+    def left_early_but_under_minimum?
+      @left_early && !has_minimum_weekly_hours?
+    end
+
+    def qualifies_for_overtime_after_leaving_early?
+      @left_early && has_minimum_weekly_hours?
     end
 
     def has_minimum_weekly_hours?
-      rule_included?("MinimumWeeklyHours") ? Rules::MinimumWeeklyHours.new(@base).check : true
-    end
-
-    def is_overtime_activity_type?
-      rule_included?("IsOvertimeActivityType") ? Rules::IsOvertimeActivityType.new(@base).check : true
-    end
-
-    def has_maximum_daily_hours?
-      rule_included?("MaximumDailyHours") ? Rules::MaximumDailyHours.new(@base).check : false
-    end
-
-    def is_partial_overtime_day?
-      rule_included?("IsPartialOvertimeDay") ? Rules::IsPartialOvertimeDay.new(@base).check : false
-    end
-
-    def is_overtime_day?
-      rule_included?("IsOvertimeDay") ? Rules::IsOvertimeDay.new(@base).check : false
-    end
-
-    def is_lunch?
-      rule_included?("IsLunch") ? Rules::IsLunch.new(@base).check : false
+      rule_included?("MinimumWeeklyHours") ? Rules::MinimumWeeklyHours.check(current_weekly_hours, @options[:criteria][:minimum_weekly_hours]) : true
     end
 
     def rule_included?(rule)
