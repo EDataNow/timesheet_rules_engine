@@ -20,9 +20,9 @@ class TimesheetRulesEngine
     end
 
     @result_timesheets = @timesheets.map do |timesheet|
-      timesheet = Processors::Timesheet.new(timesheet, @options.merge({current_weekly_hours: @current_weekly_hours,
-                                                                       left_early: timesheet.left_early,
-                                                                       gets_bonus_overtime: @gets_bonus_overtime})).process_timesheet
+      timesheet = Processors::Timesheet.new(timesheet,
+                                            @options.merge({current_weekly_hours:
+                                                            @current_weekly_hours})).process_timesheet
 
       @current_weekly_hours += timesheet.total
 
@@ -30,7 +30,6 @@ class TimesheetRulesEngine
     end
 
     Processors::Timesheets.new(@result_timesheets, @options.merge({ left_early: @left_early,
-                                                             current_weekly_hours: @current_weekly_hours,
-                                                              gets_bonus_overtime: @gets_bonus_overtime })).process_timesheets
+                                                                     current_weekly_hours: @current_weekly_hours })).process_timesheets
   end
 end

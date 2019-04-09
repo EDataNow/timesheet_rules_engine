@@ -3,10 +3,11 @@ require 'byebug'
 
 module Rules
   class Base
-    DEFAULTS = {  minimum_daily_hours: 0.0,
-                  maximum_daily_hours: 0.0,
-                  minimum_weekly_hours: 0.0,
-                  maximum_weekly_hours: 0.0,
+    DEFAULTS = {
+                  minimum_daily_hours: 3.0,
+                  maximum_daily_hours: 8.0,
+                  minimum_weekly_hours: 44.0,
+                  maximum_weekly_hours: 60.0,
                   overtime_days: ["saturday", "sunday"],
                   saturdays_overtime: true,
                   sundays_overtime: true,
@@ -14,7 +15,7 @@ module Rules
                   decimal_place: 2,
                   billable_hour: 0.25,
                   closest_minute: 8.0,
-                  scheduled_shift: nil,
+                  scheduled_shift: nil
                 }
 
     attr_reader :activity, :criteria, :processed_activity
@@ -22,7 +23,7 @@ module Rules
     attr_accessor :current_weekly_hours, :current_daily_hours, :left_early
 
     def initialize(activity, criteria={}, context={current_weekly_hours: 0.0, current_daily_hours: 0.0,
-                                                   left_early: false, gets_bonus_overtime: true})
+                                                   left_early: false})
       @activity = activity
       @current_weekly_hours = context[:current_weekly_hours]
       @current_daily_hours = context[:current_daily_hours]
@@ -36,8 +37,6 @@ module Rules
     end
 
     def process_activity
-      @processed_activity[:billable] = @activity.total_hours
-      @processed_activity[:payable] = @activity.total_hours
       @processed_activity[:regular] = @activity.total_hours
 
       @processed_activity

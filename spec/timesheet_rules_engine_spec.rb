@@ -4,7 +4,7 @@ require 'timesheet_rules_engine'
 
 describe TimesheetRulesEngine do
   context 'only use is lunch rule' do
-    context 'worked all only on a saturday', focus: true do
+    context 'worked all only on a saturday' do
       let(:saturday) {
         [
           OpenStruct.new(attributes_for(:activity, total_hours: 4.0, from: DateTime.parse("2019-04-13 7:00am"),
