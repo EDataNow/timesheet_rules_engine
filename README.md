@@ -48,6 +48,24 @@ eg.
 
 ## Options
 
+`include_rules`
+
+The list of [rules](#rules) that will be applied, empty means **all**.
+
+**Default: []**
+
+`exclude_rules`
+
+The list of [rules](#rules) that will be excluded from being applied, empty means **none**.
+
+**Default: []**
+
+`no_rules`
+
+If true, will apply no rules.
+
+**Default: false**
+
 `criteria`
 
 This is a hash that includes the following information on default but can be modified by passing in your own via options hash
@@ -70,26 +88,7 @@ This is a hash that includes the following information on default but can be mod
   closest_minute: 8.0,
   scheduled_shift: nil
 }
-
 ```
-
-`include_rules`
-
-The list of [rules](#rules) that will be applied, empty means **all**.
-
-**Default: []**
-
-`exclude_rules`
-
-The list of [rules](#rules) that will be excluded from being applied, empty means **none**.
-
-**Default: []**
-
-`no_rules`
-
-If true, will apply no rules.
-
-**Default: false**
 
 # Output
 
