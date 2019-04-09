@@ -25,15 +25,18 @@ to your Gemfile and
 TimesheetRulesEngine.new(timesheets).process_timesheets
 ```
 
-## Params
+# Parameters
 
+## Required
 `timesheets`
 
-This is a collection of timesheets that the hours will be calculated on.
+A collection of timesheets that the hours will be calculated on.
+
+## Optional
 
 `options`
 
-The options hash is an optional second params that accepts the below [Options](#options)
+A hash that accepts the below [Options](#options)
 
 eg.
 
