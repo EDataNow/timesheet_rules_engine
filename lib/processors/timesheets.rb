@@ -11,10 +11,10 @@ module Processors
 
     DEFAULTS = {
                   criteria: {
-                              minimum_daily_hours: 0.0,
-                              maximum_daily_hours: 0.0,
-                              minimum_weekly_hours: 0.0,
-                              maximum_weekly_hours: 0.0,
+                              minimum_daily_hours: 3.0,
+                              maximum_daily_hours: 8.0,
+                              minimum_weekly_hours: 44.0,
+                              maximum_weekly_hours: 60.0,
                               overtime_days: ["saturday", "sunday"],
                               saturdays_overtime: true,
                               sundays_overtime: true,
@@ -59,7 +59,7 @@ module Processors
 
     def process_timesheets
       @processed_timesheets.each do |processed_timesheet|
-        [:billable, :regular, :payable, :overtime, :downtime, :lunch, :total].each do |attribute|
+        [:billable, :regular, :payable, :overtime, :minimum_regular, :downtime, :lunch, :total].each do |attribute|
           @result_timesheets[attribute] += processed_timesheet[attribute]
         end
 

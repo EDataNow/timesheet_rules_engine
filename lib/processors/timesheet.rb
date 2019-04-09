@@ -21,10 +21,10 @@ module Processors
                                ]
     DEFAULTS = {
                   criteria: {
-                              minimum_daily_hours: 0.0,
-                              maximum_daily_hours: 0.0,
-                              minimum_weekly_hours: 0.0,
-                              maximum_weekly_hours: 0.0,
+                              minimum_daily_hours: 3.0,
+                              maximum_daily_hours: 8.0,
+                              minimum_weekly_hours: 44.0,
+                              maximum_weekly_hours: 60.0,
                               overtime_days: ["saturday", "sunday"],
                               saturdays_overtime: true,
                               sundays_overtime: true,

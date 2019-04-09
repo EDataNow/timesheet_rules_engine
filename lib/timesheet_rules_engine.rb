@@ -2,7 +2,7 @@ require 'processors/timesheet'
 require 'processors/timesheets'
 
 class TimesheetRulesEngine
-  DEFAULTS = { shift: nil, criteria: [], include_rules: [], exclude_rules: [] }
+  DEFAULTS = { include_rules: [], exclude_rules: [], no_rules: false }
 
   attr_reader :current_weekly_hours, :left_early
 

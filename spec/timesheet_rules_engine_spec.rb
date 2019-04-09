@@ -10,6 +10,7 @@ describe TimesheetRulesEngine do
               maximum_daily_hours: 8.0,
               minimum_weekly_hours: 44.0,
               maximum_weekly_hours: 60.0,
+              overtime_days: ["saturday", "sunday"],
               saturdays_overtime: true,
               sundays_overtime: true,
               holidays_overtime: true,
@@ -110,7 +111,7 @@ describe TimesheetRulesEngine do
       }
 
       it "should calculate correct regular and overtime hours" do
-        result = TimesheetRulesEngine.new(timesheets, {criteria: criteria}).process_timesheets
+        result = TimesheetRulesEngine.new(timesheets).process_timesheets
 
         expect(result.overtime).to eq(2.0)
         expect(result.regular).to eq(44.0)
@@ -190,7 +191,7 @@ describe TimesheetRulesEngine do
       }
 
       it "should calculate correct regular and overtime hours" do
-        result = TimesheetRulesEngine.new(timesheets, {criteria: criteria}).process_timesheets
+        result = TimesheetRulesEngine.new(timesheets).process_timesheets
 
         expect(result.overtime).to eq(1.0)
         expect(result.regular).to eq(34.0)
@@ -270,7 +271,7 @@ describe TimesheetRulesEngine do
       }
 
       it "should calculate correct regular and overtime hours" do
-        result = TimesheetRulesEngine.new(timesheets, {criteria: criteria}).process_timesheets
+        result = TimesheetRulesEngine.new(timesheets).process_timesheets
 
         expect(result.overtime).to eq(0.0)
         expect(result.regular).to eq(32.0)
@@ -382,7 +383,7 @@ describe TimesheetRulesEngine do
       }
 
       it "should calculate correct regular and overtime hours" do
-        result = TimesheetRulesEngine.new(timesheets, {criteria: criteria}).process_timesheets
+        result = TimesheetRulesEngine.new(timesheets).process_timesheets
 
         expect(result.regular).to eq(35.0)
         expect(result.overtime).to eq(6.0)
@@ -466,7 +467,7 @@ describe TimesheetRulesEngine do
       }
 
       it "should calculate correct regular and overtime hours" do
-        result = TimesheetRulesEngine.new(timesheets, {criteria: criteria}).process_timesheets
+        result = TimesheetRulesEngine.new(timesheets).process_timesheets
 
         expect(result.regular).to eq(35.0)
         expect(result.overtime).to eq(0.0)
