@@ -77,7 +77,12 @@ module Processors
         if @options[:no_rules]
           base_rule.process_activity
         else
-          Activity.new(base_rule, DEFAULT_ACTIVITY_RULES.reject{|r| @options[:exclude_rules].include?(r) }).calculate_hours
+          activity_rules = DEFAULT_ACTIVITY_RULES.reject{|r| @options[:exclude_rules].include?(r)}
+          if @options[:include_rules].present?
+            activity_rules = @options[:include_rules]
+          end
+
+          Activity.new(base_rule, activity_rules).calculate_hours
         end
 
 
