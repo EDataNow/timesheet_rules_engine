@@ -19,12 +19,11 @@ module Rules
 
     attr_reader :activity, :criteria, :processed_activity
 
-    attr_accessor :stop, :current_weekly_hours, :current_daily_hours, :left_early
+    attr_accessor :current_weekly_hours, :current_daily_hours, :left_early
 
     def initialize(activity, criteria={}, context={current_weekly_hours: 0.0, current_daily_hours: 0.0,
                                                    left_early: false, gets_bonus_overtime: true})
       @activity = activity
-      @stop = false
       @current_weekly_hours = context[:current_weekly_hours]
       @current_daily_hours = context[:current_daily_hours]
       @left_early = context[:left_early]

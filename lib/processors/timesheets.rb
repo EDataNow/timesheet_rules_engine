@@ -10,7 +10,6 @@ module Processors
                              ]
 
     DEFAULTS = {
-                  rules: DEFAULT_WEEKLY_RULES,
                   criteria: {
                               minimum_daily_hours: 0.0,
                               maximum_daily_hours: 0.0,
@@ -28,13 +27,12 @@ module Processors
                   current_weekly_hours: 0.0,
                   include_rules: [],
                   exclude_rules: [],
-                  left_early: false,
-                  gets_bonus_overtime: true
+                  left_early: false
                 }
 
-    attr_reader :processed_timesheets, :rules, :gets_bonus_overtime
+    attr_reader :processed_timesheets, :rules
 
-    attr_accessor :current_weekly_hours, :current_daily_hours, :total_overtime
+    attr_accessor :current_weekly_hours
 
     def initialize(processed_timesheets, options)
       @options = DEFAULTS.merge(options.symbolize_keys)
@@ -43,25 +41,20 @@ module Processors
 
       @current_weekly_hours = @options[:current_weekly_hours]
       @left_early = @options[:left_early]
-      # @gets_bonus_overtime = @options[:gets_bonus_overtime]
 
-      @options[:exclude_rules].each {|er| @options[:rules].reject!{|r| r == er }}
       unless @options[:include_rules].empty?
-        @options[:rules] = @options[:include_rules]
+        @rules = @options[:include_rules]
+      else
+        @rules = DEFAULT_WEEKLY_RULES
       end
 
-      # if @gets_bonus_overtime
-      #   @options[:criteria][:minimum_weekly_hours] -= @options[:criteria][:overtime_reduction]
-      # end
+      @options[:exclude_rules].each {|er| @rules.reject!{|r| r == er }}
 
       if @options[:criteria][:scheduled_shift].nil?
         @options[:criteria][:scheduled_shift] = @options[:shift]
       end
 
       @processed_timesheets = processed_timesheets
-      rules = @options[:rules]
-
-      @rules = rules.empty? ? DEFAULT_WEEKLY_RULES : rules
     end
 
     def process_timesheets
