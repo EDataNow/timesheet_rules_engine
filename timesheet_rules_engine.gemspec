@@ -12,4 +12,5 @@ Gem::Specification.new do |s|
   s.license       = 'MIT'
   s.test_files = Dir["spec/**/*"]
   s.add_dependency "holidays"
+  s.add_dependency "activesupport"
 end
