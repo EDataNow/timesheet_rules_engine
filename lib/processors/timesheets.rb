@@ -1,4 +1,4 @@
-Dir["lib/rules/*.rb"].each {|f| require f.gsub("lib/", "") }
+Dir["lib/rules/**/*.rb"].each {|f| require f.gsub("lib/", "") }
 require 'byebug'
 require 'active_support/all'
 require 'ostruct'
@@ -22,6 +22,7 @@ module Processors
                               decimal_place: 2,
                               billable_hour: 0.25,
                               closest_minute: 8.0,
+                              region: "ca_on",
                               scheduled_shift: nil,
                             },
                   current_weekly_hours: 0.0,
@@ -88,11 +89,15 @@ module Processors
     end
 
     def has_minimum_weekly_hours?
-      rule_included?("MinimumWeeklyHours") ? Rules::MinimumWeeklyHours.check(current_weekly_hours, @options[:criteria][:minimum_weekly_hours]) : true
+      rule_included?("MinimumWeeklyHours") ? Object.const_get("Rules::#{@options[:criteria][:region].camelcase}::MinimumWeeklyHours").check(current_weekly_hours, @options[:criteria][:minimum_weekly_hours]) : true
     end
 
     def rule_included?(rule)
-      @rules.include?(rule)
+      begin
+        Object.const_get("Rules::#{@options[:criteria][:region].camelcase}::#{rule}").present? && @rules.include?(rule)
+      rescue
+        false
+      end
     end
   end
 end

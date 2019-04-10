@@ -1,4 +1,4 @@
-Dir["rules/*.rb"].each {|file| require file }
+Dir["lib/rules/**/*.rb"].each {|f| require f.gsub("lib/", "") }
 require 'processors/activity'
 require 'ostruct'
 require 'byebug'
@@ -12,9 +12,9 @@ module Processors
                                'IsOvertimeActivityType',
                                'IsOutsideRegularSchedule',
                                "IsPartialOvertimeDay",
-                               "MaximumDailyHours",
-                               "MinimumWeeklyHours"
+                               "MaximumDailyHours"
                              ]
+
     DEFAULT_TIMESHEET_RULES =  [
                                 'MinimumDailyHours'
                                ]
@@ -32,7 +32,7 @@ module Processors
                               billable_hour: 0.25,
                               closest_minute: 8.0,
                               region: "ca_on",
-                              scheduled_shift: nil,
+                              scheduled_shift: nil
                             },
                   current_weekly_hours: 0.0,
                   include_rules: [],
@@ -96,7 +96,7 @@ module Processors
     end
 
     def has_minimum_daily_hours?
-      rule_included?("MinimumDailyHours") ? Rules::MinimumDailyHours.check(@result_timesheet.total, @options[:criteria][:minimum_daily_hours]) : true
+      rule_included?("MinimumDailyHours") ? Object.const_get("Rules::#{@options[:criteria][:region].camelcase}::MinimumDailyHours").check(@result_timesheet.total, @options[:criteria][:minimum_daily_hours]) : true
     end
 
     def qualifies_for_minimum_after_leaving_early?
@@ -106,7 +106,11 @@ module Processors
     private
 
     def rule_included?(rule)
-      @rules.include?(rule)
+      begin
+        Object.const_get("Rules::#{@options[:criteria][:region].camelcase}::#{rule}").present? && @rules.include?(rule)
+      rescue
+        false
+      end
     end
 
   end

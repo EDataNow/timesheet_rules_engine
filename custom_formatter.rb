@@ -1,6 +1,7 @@
 require 'rspec'
 require 'csv'
 require 'stringio'
+require 'active_support/all'
 
 class String
   def demodulize(path=self)

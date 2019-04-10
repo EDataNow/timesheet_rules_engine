@@ -55,6 +55,14 @@ module Rules
       is_overtime_days? || is_holiday?
     end
 
+    def method_missing(method, *args)
+      if @criteria.has_key?(method)
+        @criteria[method]
+      else
+        super
+      end
+    end
+
     private
 
     def is_overtime_days?

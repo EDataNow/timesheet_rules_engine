@@ -16,6 +16,7 @@ module Processors
             decimal_place: 2,
             billable_hour: 0.25,
             closest_minute: 8.0,
+            region: "ca_on",
             scheduled_shift: OpenStruct.new(started_at: DateTime.parse("2019-04-04 7:00am"),
                                 ended_at: DateTime.parse("2019-04-04 3:00pm"))
           }
@@ -35,6 +36,7 @@ module Processors
             decimal_place: 2,
             billable_hour: 0.25,
             closest_minute: 8.0,
+            region: "ca_on",
             scheduled_shift: OpenStruct.new(started_at: DateTime.parse("2019-04-06 7:00am"),
                                 ended_at: DateTime.parse("2019-04-06 3:00pm"))
           }
@@ -100,6 +102,7 @@ module Processors
             decimal_place: 2,
             billable_hour: 0.25,
             closest_minute: 8.0,
+            region: "ca_on",
             scheduled_shift: OpenStruct.new(started_at: DateTime.parse("2019-04-06 7:00am"),
                                 ended_at: DateTime.parse("2019-04-06 3:00pm"))
           }

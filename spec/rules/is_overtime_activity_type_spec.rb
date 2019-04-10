@@ -16,6 +16,7 @@ module Rules
             decimal_place: 2,
             billable_hour: 0.25,
             closest_minute: 8.0,
+            region: "ca_on",
             scheduled_shift: OpenStruct.new(started_at: DateTime.parse("2018-01-01 6:00am"),
                                             ended_at: DateTime.parse("2018-01-01 4:30pm"))
           }

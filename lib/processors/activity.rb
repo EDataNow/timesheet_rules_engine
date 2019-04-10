@@ -13,7 +13,6 @@ module Processors
                                'IsOutsideRegularSchedule',
                                "IsPartialOvertimeDay",
                                "MaximumDailyHours",
-                               "MinimumWeeklyHours"
                              ]
     attr_reader :base, :rules
 

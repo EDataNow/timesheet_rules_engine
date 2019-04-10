@@ -19,6 +19,7 @@ module Processors
                           billable_hour: 0.25,
                           closest_minute: 8.0,
                           overtime_reduction: 0.0,
+                          region: "ca_on",
                           scheduled_shift: OpenStruct.new(started_at: DateTime.parse("2018-01-03 6:00am"),
                                                           ended_at: DateTime.parse("2018-01-03 4:30pm"))
                         }
@@ -70,6 +71,7 @@ module Processors
                           billable_hour: 0.25,
                           closest_minute: 8.0,
                           overtime_reduction: 0.0,
+                          region: "ca_on",
                           scheduled_shift: OpenStruct.new(started_at: DateTime.parse("2018-01-03 6:00am"),
                                                           ended_at: DateTime.parse("2018-01-03 4:30pm"))
                         }
