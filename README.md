@@ -91,6 +91,7 @@ This is a hash that includes the following information on default but can be mod
   decimal_place: 2,
   billable_hour: 0.25,
   closest_minute: 8.0,
+  region: "ca_on",
   scheduled_shift: nil
 }
 ```

@@ -20,6 +20,7 @@ module Rules
                   decimal_place: 2,
                   billable_hour: 0.25,
                   closest_minute: 8.0,
+                  region: "ca_on",
                   scheduled_shift: nil
                 }
 
@@ -61,7 +62,7 @@ module Rules
     end
 
     def is_holiday?(field_to_check=nil)
-      holidays_overtime && @activity.from.holiday?(:ca_on) && @activity.to.holiday?(:ca_on)
+      holidays_overtime && @activity.from.holiday?(region) && @activity.to.holiday?(region)
     end
 
   end

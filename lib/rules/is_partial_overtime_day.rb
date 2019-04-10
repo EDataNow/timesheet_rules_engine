@@ -21,6 +21,7 @@ module Rules
                   decimal_place: 2,
                   billable_hour: 0.25,
                   closest_minute: 8.0,
+                  region: "ca_on",
                   scheduled_shift: nil
                 }
 
@@ -102,9 +103,9 @@ module Rules
     def is_holiday?(field_to_check=nil)
       if holidays_overtime
         if field_to_check
-          self.instance_variable_get("@#{field_to_check}").holiday?(:ca_on)
+          self.instance_variable_get("@#{field_to_check}").holiday?(region)
         else
-          @from.holiday?(:ca_on) && @to.holiday?(:ca_on)
+          @from.holiday?(region) && @to.holiday?(region)
         end
       else
         false

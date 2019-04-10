@@ -31,6 +31,7 @@ module Processors
                               decimal_place: 2,
                               billable_hour: 0.25,
                               closest_minute: 8.0,
+                              region: "ca_on",
                               scheduled_shift: nil,
                             },
                   current_weekly_hours: 0.0,
