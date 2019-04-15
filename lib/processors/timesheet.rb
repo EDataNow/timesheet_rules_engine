@@ -93,6 +93,9 @@ module Processors
       end
 
       if qualifies_for_minimum_after_leaving_early?
+        # One scenario that isn't take care of is the below minimum but
+        # partially on a holiday means 1 regular and 1 overtime hour.
+
         @result_timesheet[:minimum_regular] = @options[:criteria][:minimum_daily_hours]
       elsif qualifies_for_overtime?
         @result_timesheet.overtime = (@result_timesheet.total - @result_timesheet.lunch) - @options[:criteria][:maximum_daily_hours]
@@ -121,21 +124,7 @@ module Processors
     end
 
     def qualifies_for_minimum_after_leaving_early?
-      !@left_early && !has_minimum_daily_hours? && @result_timesheet.overtime == 0.0 && !is_holiday?
-    end
-
-    def is_holiday?
-      if @timesheet.activities.count > 0
-        base_rule = Rules::Base.new(@timesheet.activities.first, @options[:criteria], { current_weekly_hours: @current_weekly_hours,
-                                                                      current_daily_hours: @result_timesheet.total,
-                                                                      left_early: @left_early,
-                                                                      country: @options[:country],
-                                                                      region: @options[:region] })
-
-        rule_included?("IsHoliday") ? Object.const_get("Rules::#{@options[:country].camelcase}::#{@options[:region].camelcase}::IsHoliday").new(base_rule).check : false
-      else
-        false
-      end
+      !@left_early && !has_minimum_daily_hours? && @result_timesheet.overtime == 0.0
     end
 
     private
