@@ -31,10 +31,6 @@ module Processors
         elsif is_partial_overtime_day?
           @base.processed_activity[:overtime] = Rules::IsPartialOvertimeDay.new(@base).calculate_overtime
           @base.processed_activity[:regular] = @base.activity.total_hours - @base.processed_activity[:overtime]
-        elsif is_outside_regular_schedule?
-          hours = Rules::IsOutsideRegularSchedule.new(@base).calculate_hours
-          @base.processed_activity[:overtime] = hours.overtime
-          @base.processed_activity[:regular] = hours.regular
         else
           @base.processed_activity[:regular] = @base.activity.total_hours
         end

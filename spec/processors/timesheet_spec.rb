@@ -87,7 +87,7 @@ module Processors
 
             expect(result.regular).to eq(1.0)
             expect(result.overtime).to eq(0.0)
-            expect(result.minimum_regular).to eq(0.0)
+            expect(result.minimum_regular).to eq(3.0)
           end
         end
 
@@ -100,7 +100,7 @@ module Processors
                                                                       to: DateTime.parse("2019-04-04 8:00am"), total_hours: 0.50))
             ]
 
-            result = Timesheet.new(OpenStruct.new(attributes_for(:timesheet_with_activities, activities: activities, left_early: true)), {criteria: criteria}).process_timesheet
+            result = Timesheet.new(OpenStruct.new(attributes_for(:timesheet_with_activities, activities: activities, left_early: true)), {criteria: criteria, left_early: true}).process_timesheet
 
             expect(result.regular).to eq(1.0)
             expect(result.overtime).to eq(0.0)
@@ -108,7 +108,7 @@ module Processors
           end
         end
 
-        it "should calculate to have 7 regular hours and 1 overtime hour when they came in early but worked scheduled hours with realistic times" do
+        it "should calculate to have 8 regular hours and 0 overtime hour when they came in early but worked scheduled hours with realistic times" do
           activities = [
             OpenStruct.new(attributes_for(:activity, type: "shift_prep", from: DateTime.parse("2019-04-04 6:00am"),
                                                                     to: DateTime.parse("2019-04-04 7:23am"), total_hours: 1.50)),
@@ -134,16 +134,16 @@ module Processors
 
           result = Timesheet.new(OpenStruct.new(attributes_for(:timesheet_with_activities, activities: activities)), {criteria: criteria}).process_timesheet
 
-          expect(result.regular).to eq(7.0)
+          expect(result.regular).to eq(8.0)
           expect(result.lunch).to eq(1.0)
           expect(result.total).to eq(9.0)
-          expect(result.overtime).to eq(1.0)
+          expect(result.overtime).to eq(0.0)
         end
 
-        it "should calculate to have 7 regular hours and 1 overtime hour when they came in early but worked scheduled hours" do
+        it "should calculate to have 8 regular hours and 1 overtime hour when they came in early but worked scheduled hours" do
           activities = [
-            OpenStruct.new(attributes_for(:activity, type: "shift_prep", from: DateTime.parse("2019-04-04 6:00am"),
-                                                                    to: DateTime.parse("2019-04-04 7:30am"), total_hours: 1.50)),
+            OpenStruct.new(attributes_for(:activity, type: "shift_prep", from: DateTime.parse("2019-04-04 5:00am"),
+                                                                    to: DateTime.parse("2019-04-04 7:30am"), total_hours: 2.50)),
             OpenStruct.new(attributes_for(:activity, type: "job", from: DateTime.parse("2019-04-04 7:30am"),
                                                                     to: DateTime.parse("2019-04-04 8:00am"), total_hours: 0.50)),
             OpenStruct.new(attributes_for(:activity, type: "downtime", from: DateTime.parse("2019-04-04 8:00am"),
@@ -166,7 +166,7 @@ module Processors
 
           result = Timesheet.new(OpenStruct.new(attributes_for(:timesheet_with_activities, activities: activities)), {criteria: criteria}).process_timesheet
 
-          expect(result.regular).to eq(7.0)
+          expect(result.regular).to eq(8.0)
           expect(result.overtime).to eq(1.0)
         end
 

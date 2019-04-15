@@ -111,20 +111,20 @@ module Processors
         it "should calculate correct regular and overtime hours when left early for legit reason during the week" do
           processed_timesheets = [
             OpenStruct.new({id: 1, billable: 0.0, downtime: 0.0, lunch: 1.0, regular: 7.0,
-                                    minimum_regular: 0.0, payable: 0.0, overtime: 0.0, total: 0.0}),
+                                    minimum_regular: 0.0, payable: 0.0, overtime: 0.0, total: 8.0}),
             OpenStruct.new({id: 1, billable: 0.0, downtime: 0.0, lunch: 1.0, regular: 9.0,
-                                    minimum_regular: 0.0, payable: 0.0, overtime: 1.0, total: 0.0}),
+                                    minimum_regular: 0.0, payable: 0.0, overtime: 1.0, total: 11.0}),
             OpenStruct.new({id: 1, billable: 0.0, downtime: 0.0, lunch: 0.0, regular: 1.0,
-                                    minimum_regular: 3.0, payable: 0.0, overtime: 0.0, total: 0.0}),
+                                    minimum_regular: 3.0, payable: 0.0, overtime: 0.0, total: 1.0}),
             OpenStruct.new({id: 1, billable: 0.0, downtime: 0.0, lunch: 1.0, regular: 7.0,
-                                    minimum_regular: 0.0, payable: 0.0, overtime: 0.0, total: 0.0}),
+                                    minimum_regular: 0.0, payable: 0.0, overtime: 0.0, total: 8.0}),
             OpenStruct.new({id: 1, billable: 0.0, downtime: 0.0, lunch: 1.0, regular: 7.0,
-                                    minimum_regular: 0.0, payable: 0.0, overtime: 0.0, total: 0.0}),
+                                    minimum_regular: 0.0, payable: 0.0, overtime: 0.0, total: 8.0}),
           ]
 
           result = Timesheets.new(processed_timesheets, {criteria: criteria}).process_timesheets
 
-          expect(result.regular).to eq(34.0)
+          expect(result.regular).to eq(33.0)
           expect(result.overtime).to eq(1.0)
         end
 

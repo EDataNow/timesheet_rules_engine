@@ -310,8 +310,8 @@ describe TimesheetRulesEngine do
       it "should calculate correct regular and overtime hours" do
         result = TimesheetRulesEngine.new(timesheets).process_timesheets
 
-        expect(result.overtime).to eq(1.0)
-        expect(result.regular).to eq(31.0)
+        expect(result.overtime).to eq(2.0)
+        expect(result.regular).to eq(32.0)
       end
     end
 

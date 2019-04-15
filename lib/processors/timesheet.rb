@@ -12,11 +12,12 @@ module Processors
                                'IsOvertimeActivityType',
                                'IsOutsideRegularSchedule',
                                "IsPartialOvertimeDay",
-                               "MaximumDailyHours"
+                               "MaximumDailyHours",
                              ]
 
     DEFAULT_TIMESHEET_RULES =  [
-                                'MinimumDailyHours'
+                                'MinimumDailyHours',
+                                "MaximumDailyHours"
                                ]
     DEFAULTS = {
                   criteria: {
@@ -51,7 +52,7 @@ module Processors
       @timesheet = timesheet
       @options = DEFAULTS.merge(options.symbolize_keys)
       @current_weekly_hours = @options[:current_weekly_hours]
-      @left_early = timesheet.left_early
+      @left_early = @options[:left_early]
 
       unless @options[:include_rules].empty?
         @rules = @options[:include_rules]
@@ -91,19 +92,36 @@ module Processors
         base_rule.processed_activity
       end
 
-      # if qualifies_for_minimum_after_leaving_early?
-      #   @result_timesheet[:minimum_regular] = @options[:criteria][:minimum_daily_hours]
-      # end
+      if qualifies_for_minimum_after_leaving_early?
+        @result_timesheet[:minimum_regular] = @options[:criteria][:minimum_daily_hours]
+      elsif qualifies_for_overtime?
+        @result_timesheet.overtime = (@result_timesheet.total - @result_timesheet.lunch) - @options[:criteria][:maximum_daily_hours]
+        @result_timesheet.regular = @options[:criteria][:maximum_daily_hours]
+      end
 
       @result_timesheet
     end
 
     def has_minimum_daily_hours?
-      rule_included?("MinimumDailyHours") ? Object.const_get("Rules::#{@options[:country].camelcase}::#{@options[:region].camelcase}::MinimumDailyHours").check(@result_timesheet.total, @options[:criteria][:minimum_daily_hours]) : true
+      if rule_included?("MinimumDailyHours")
+        Object.const_get("Rules::#{@options[:country].camelcase}::#{@options[:region].camelcase}::MinimumDailyHours").check(
+                            @result_timesheet.total,
+                            @options[:criteria][:minimum_daily_hours])
+      else
+        true
+      end
+    end
+
+    def has_maximum_daily_hours?
+      rule_included?("MaximumDailyHours") ? Object.const_get("Rules::#{@options[:country].camelcase}::#{@options[:region].camelcase}::MaximumDailyHours").check(@result_timesheet.total, @options[:criteria][:maximum_daily_hours]) : false
+    end
+
+    def qualifies_for_overtime?
+      !@left_early && has_maximum_daily_hours?
     end
 
     def qualifies_for_minimum_after_leaving_early?
-      !@left_early && !has_minimum_daily_hours?
+      !@left_early && !has_minimum_daily_hours? && @result_timesheet.overtime == 0.0
     end
 
     private

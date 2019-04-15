@@ -126,18 +126,18 @@ module Processors
             end
 
             context 'when activity is outside regular hours on a regular day' do
-              it "should have all hours in overtime when activity is outside normal hours" do
+              it "should have all hours in regular when activity is outside normal hours" do
                 base = Rules::Base.new(OpenStruct.new(attributes_for(:activity, total_hours: 1.0, from: DateTime.parse("2018-01-03 5:01am"),
                                                               to: DateTime.parse("2018-01-03 6:05am"))),
                                                               criteria)
 
                 Activity.new(base).calculate_hours
 
-                expect(base.processed_activity.regular).to eq(0.0)
-                expect(base.processed_activity.overtime).to eq(1.0)
+                expect(base.processed_activity.regular).to eq(1.0)
+                expect(base.processed_activity.overtime).to eq(0.0)
               end
 
-              it "should have some hours in regular and some in overtime when it has started outside regular but ended in regular" do
+              it "should have all hours in regular and none in overtime when it has started outside regular but ended in regular" do
                 base = Rules::Base.new(OpenStruct.new(attributes_for(:activity, total_hours: 1.0, from: DateTime.parse("2018-01-03 5:01am"),
                                                               to: DateTime.parse("2018-01-03 7:05am"))),
                                                               criteria)
@@ -145,7 +145,7 @@ module Processors
                 Activity.new(base).calculate_hours
 
                 expect(base.processed_activity.regular).to eq(1.0)
-                expect(base.processed_activity.overtime).to eq(1.0)
+                expect(base.processed_activity.overtime).to eq(0.0)
               end
             end
           end

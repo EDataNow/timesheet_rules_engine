@@ -65,7 +65,10 @@ module Processors
           @result_timesheets[attribute] += processed_timesheet[attribute]
         end
 
-        @result_timesheets[:regular] += processed_timesheet[:minimum_regular]
+        if processed_timesheet[:minimum_regular] > 0
+          @result_timesheets[:regular] += processed_timesheet[:minimum_regular]
+          @result_timesheets[:regular] -= processed_timesheet[:regular]
+        end
       end
 
       if qualifies_for_overtime_after_leaving_early?

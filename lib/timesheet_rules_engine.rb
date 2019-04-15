@@ -25,7 +25,8 @@ class TimesheetRulesEngine
     @result_timesheets = @timesheets.map do |timesheet|
       timesheet = Processors::Timesheet.new(timesheet,
                                             @options.merge({current_weekly_hours:
-                                                            @current_weekly_hours})).process_timesheet
+                                                            @current_weekly_hours,
+                                                            left_early: @left_early})).process_timesheet
 
       @current_weekly_hours += timesheet.total
 

@@ -10,7 +10,7 @@ module Rules
           let(:criteria) {
             {
                 minimum_daily_hours: 0.0,
-                maximum_daily_hours: 40.0,
+                maximum_daily_hours: 8.0,
                 minimum_weekly_hours: 0.0,
                 maximum_weekly_hours: 0.0,
                 saturdays_overtime: true,
@@ -26,9 +26,7 @@ module Rules
           }
 
           context 'when activity is over maximum daily hours' do
-            let(:base) { ::Rules::Base.new(OpenStruct.new(attributes_for(:activity, total_hours: 4.0)), criteria, {current_weekly_hours: 40.0, current_daily_hours: 40.0}) }
-            let(:max) { MaximumDailyHours.new(base) }
-            subject { max.check }
+            subject { MaximumDailyHours.check(41.0, 40.0) }
 
             it "should be beyond maximum daily hours" do
               expect(subject).to be true
@@ -36,9 +34,7 @@ module Rules
           end
 
           context 'when activity is not over maximum daily hours' do
-            let(:base) { ::Rules::Base.new(OpenStruct.new(attributes_for(:activity, total_hours: 4.0)), criteria, {current_weekly_hours: 25.0, current_daily_hours: 25.0}) }
-            let(:max) { MaximumDailyHours.new(base) }
-            subject { max.check }
+            subject { MaximumDailyHours.check(25.0, 25.0) }
 
             it "should not be beyond maximum daily hours" do
               expect(subject).to be false
