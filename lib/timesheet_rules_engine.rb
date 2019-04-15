@@ -2,13 +2,16 @@ require 'processors/timesheet'
 require 'processors/timesheets'
 
 class TimesheetRulesEngine
-  DEFAULTS = { include_rules: [], exclude_rules: [], no_rules: false }
+  DEFAULTS = { include_rules: [], exclude_rules: [], no_rules: false,
+               country: "ca", region: "on"
+             }
 
   attr_reader :current_weekly_hours, :left_early
 
   def initialize(timesheets=[], options={})
     @timesheets = timesheets
     @options = DEFAULTS.merge(options.symbolize_keys)
+    @region = "#{@options[:country]} #{@options[:region]}"
 
     @current_weekly_hours = 0.0
     @left_early = false

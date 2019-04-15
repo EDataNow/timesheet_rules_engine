@@ -28,7 +28,8 @@ module Processors
                   current_weekly_hours: 0.0,
                   include_rules: [],
                   exclude_rules: [],
-                  left_early: false
+                  left_early: false,
+                  country: "ca", region: "on"
                 }
 
     attr_reader :processed_timesheets, :rules
@@ -89,12 +90,12 @@ module Processors
     end
 
     def has_minimum_weekly_hours?
-      rule_included?("MinimumWeeklyHours") ? Object.const_get("Rules::#{@options[:criteria][:region].camelcase}::MinimumWeeklyHours").check(current_weekly_hours, @options[:criteria][:minimum_weekly_hours]) : true
+      rule_included?("MinimumWeeklyHours") ? Object.const_get("Rules::#{@options[:country].camelcase}::#{@options[:region].camelcase}::MinimumWeeklyHours").check(current_weekly_hours, @options[:criteria][:minimum_weekly_hours]) : true
     end
 
     def rule_included?(rule)
       begin
-        Object.const_get("Rules::#{@options[:criteria][:region].camelcase}::#{rule}").present? && @rules.include?(rule)
+        Object.const_get("Rules::#{@options[:country].camelcase}::#{@options[:region].camelcase}::#{rule}").present? && @rules.include?(rule)
       rescue
         false
       end

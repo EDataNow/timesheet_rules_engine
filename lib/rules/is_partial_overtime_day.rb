@@ -27,7 +27,7 @@ module Rules
 
     attr_reader :criteria, :activity, :processed_activity, :base
 
-    def initialize(base, activity=nil, criteria=nil)
+    def initialize(base, activity=nil, criteria=nil, context=nil)
       if base
         @activity = base.activity
         @criteria = base.criteria
@@ -36,6 +36,7 @@ module Rules
         @base = base
       else
         super(activity, criteria)
+        @base = self
       end
 
       process_dates
@@ -103,9 +104,9 @@ module Rules
     def is_holiday?(field_to_check=nil)
       if holidays_overtime
         if field_to_check
-          self.instance_variable_get("@#{field_to_check}").holiday?(region)
+          self.instance_variable_get("@#{field_to_check}").holiday?(@base.full_region)
         else
-          @from.holiday?(region) && @to.holiday?(region)
+          @from.holiday?(@base.full_region) && @to.holiday?(@base.full_region)
         end
       else
         false

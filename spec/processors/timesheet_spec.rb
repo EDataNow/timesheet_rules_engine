@@ -87,7 +87,7 @@ module Processors
 
             expect(result.regular).to eq(1.0)
             expect(result.overtime).to eq(0.0)
-            expect(result.minimum_regular).to eq(3.0)
+            expect(result.minimum_regular).to eq(0.0)
           end
         end
 

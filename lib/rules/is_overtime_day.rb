@@ -1,11 +1,5 @@
 require 'rules/base'
-require 'holidays'
-require 'holidays/core_extensions/date'
 require 'active_support/all'
-
-class DateTime
-  include Holidays::CoreExtensions::Date
-end
 
 module Rules
   class IsOvertimeDay < Base
@@ -52,7 +46,7 @@ module Rules
     end
 
     def is_overtime_day
-      is_overtime_days? || is_holiday?
+      is_overtime_days?
     end
 
     def method_missing(method, *args)
@@ -67,10 +61,6 @@ module Rules
 
     def is_overtime_days?
       overtime_days.any? {|d| @activity.from.send("#{d}?") } && overtime_days.any? {|d| @activity.to.send("#{d}?") }
-    end
-
-    def is_holiday?(field_to_check=nil)
-      holidays_overtime && @activity.from.holiday?(region) && @activity.to.holiday?(region)
     end
 
   end

@@ -133,7 +133,7 @@ describe TimesheetRulesEngine do
               decimal_place: 2,
               billable_hour: 0.25,
               closest_minute: 8.0,
-              region: "ca_on"
+              region: "on_ca"
             }
         }
 
@@ -311,7 +311,7 @@ describe TimesheetRulesEngine do
         result = TimesheetRulesEngine.new(timesheets).process_timesheets
 
         expect(result.overtime).to eq(1.0)
-        expect(result.regular).to eq(34.0)
+        expect(result.regular).to eq(31.0)
       end
     end
 

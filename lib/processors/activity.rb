@@ -8,6 +8,7 @@ module Processors
     DEFAULT_ACTIVITY_RULES = [
                                'IsOvertimeDay',
                                'IsLunch',
+                               'IsHoliday',
                                'IsOvertimePaid',
                                'IsOvertimeActivityType',
                                'IsOutsideRegularSchedule',
@@ -22,10 +23,10 @@ module Processors
     end
 
     def calculate_hours
-      if is_overtime_paid? && is_overtime_activity_type?
-        if is_lunch?
-          @base.processed_activity[:lunch] = @base.activity.total_hours
-        elsif is_overtime_day?
+      if is_lunch?
+        @base.processed_activity[:lunch] = @base.activity.total_hours
+      elsif is_overtime_paid? && is_overtime_activity_type?
+        if is_overtime_day? || is_holiday?
           @base.processed_activity[:overtime] = @base.activity.total_hours
         elsif is_partial_overtime_day?
           @base.processed_activity[:overtime] = Rules::IsPartialOvertimeDay.new(@base).calculate_overtime
@@ -58,6 +59,10 @@ module Processors
 
     def is_overtime_day?
       rule_included?("IsOvertimeDay") ? Rules::IsOvertimeDay.new(@base).check : false
+    end
+
+    def is_holiday?
+      rule_included?("IsHoliday") ? Object.const_get("Rules::#{@base.country.camelcase}::#{@base.region.camelcase}::IsHoliday").new(@base).check : false
     end
 
     def is_outside_regular_schedule?

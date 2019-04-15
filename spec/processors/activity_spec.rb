@@ -55,7 +55,8 @@ module Processors
         end
 
         context 'is an overtime activity type' do
-          let(:context) { {current_weekly_hours: 40.0, current_daily_hours: 0.0} }
+          let(:context) { {current_weekly_hours: 40.0, current_daily_hours: 0.0, country: "ca",
+                            region: "on"} }
 
           context 'on a regular scheduled day' do
             let(:criteria) {
@@ -150,12 +151,14 @@ module Processors
           end
 
           context 'when activity is lunch' do
-            let(:context) { {current_weekly_hours: 40.0, current_daily_hours: 0.0} }
+            let(:context) { {current_weekly_hours: 40.0, current_daily_hours: 0.0,
+                             country: "ca", region: "on"} }
 
             it "should not calculate overtime at all under any circumstances" do
               base = Rules::Base.new(OpenStruct.new(attributes_for(:activity, type: "lunch", total_hours: 1.0, from: DateTime.parse("2019-04-05 12:00pm"),
                                                             to: DateTime.parse("2019-04-05 1:00pm"))),
-                                                            criteria, {current_weekly_hours: 40.0, current_daily_hours: 8.0})
+                                                            criteria, {current_weekly_hours: 40.0, current_daily_hours: 8.0,
+                                                                       country: "ca", region: "on"})
 
               Activity.new(base).calculate_hours
 

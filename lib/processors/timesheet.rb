@@ -1,4 +1,4 @@
-Dir["lib/rules/**/*.rb"].each {|f| require f.gsub("lib/", "") }
+Dir["lib/rules/**/**/*.rb"].each {|f| require f.gsub("lib/", "") }
 require 'processors/activity'
 require 'ostruct'
 require 'byebug'
@@ -37,7 +37,8 @@ module Processors
                   current_weekly_hours: 0.0,
                   include_rules: [],
                   exclude_rules: [],
-                  no_rules: false
+                  no_rules: false,
+                  country: "ca", region: "on"
                 }
 
     attr_reader :timesheet, :rules
@@ -67,7 +68,9 @@ module Processors
       @timesheet.activities.map do |activity|
         base_rule = Rules::Base.new(activity, @options[:criteria], { current_weekly_hours: @current_weekly_hours,
                                                                      current_daily_hours: @result_timesheet.total,
-                                                                     left_early: @left_early })
+                                                                     left_early: @left_early,
+                                                                     country: @options[:country],
+                                                                     region: @options[:region] })
 
         if @options[:no_rules]
           base_rule.process_activity
@@ -88,15 +91,15 @@ module Processors
         base_rule.processed_activity
       end
 
-      if qualifies_for_minimum_after_leaving_early?
-        @result_timesheet[:minimum_regular] = @options[:criteria][:minimum_daily_hours]
-      end
+      # if qualifies_for_minimum_after_leaving_early?
+      #   @result_timesheet[:minimum_regular] = @options[:criteria][:minimum_daily_hours]
+      # end
 
       @result_timesheet
     end
 
     def has_minimum_daily_hours?
-      rule_included?("MinimumDailyHours") ? Object.const_get("Rules::#{@options[:criteria][:region].camelcase}::MinimumDailyHours").check(@result_timesheet.total, @options[:criteria][:minimum_daily_hours]) : true
+      rule_included?("MinimumDailyHours") ? Object.const_get("Rules::#{@options[:country].camelcase}::#{@options[:region].camelcase}::MinimumDailyHours").check(@result_timesheet.total, @options[:criteria][:minimum_daily_hours]) : true
     end
 
     def qualifies_for_minimum_after_leaving_early?
@@ -107,7 +110,7 @@ module Processors
 
     def rule_included?(rule)
       begin
-        Object.const_get("Rules::#{@options[:criteria][:region].camelcase}::#{rule}").present? && @rules.include?(rule)
+        Object.const_get("Rules::#{@options[:country].camelcase}::#{@options[:region].camelcase}::#{rule}").present? && @rules.include?(rule)
       rescue
         false
       end

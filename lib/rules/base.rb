@@ -15,20 +15,23 @@ module Rules
                   decimal_place: 2,
                   billable_hour: 0.25,
                   closest_minute: 8.0,
-                  region: "ca_on",
                   scheduled_shift: nil
                 }
 
-    attr_reader :activity, :criteria, :processed_activity
+    attr_reader :activity, :criteria, :processed_activity, :country, :region, :full_region
 
     attr_accessor :current_weekly_hours, :current_daily_hours, :left_early
 
     def initialize(activity, criteria={}, context={current_weekly_hours: 0.0, current_daily_hours: 0.0,
-                                                   left_early: false})
+                                                   left_early: false, region: "on", country: "ca"})
       @activity = activity
+
       @current_weekly_hours = context[:current_weekly_hours]
       @current_daily_hours = context[:current_daily_hours]
       @left_early = context[:left_early]
+      @country = context[:country]
+      @region = context[:region]
+      @full_region = "#{@country}_#{@region}"
 
       @processed_activity = OpenStruct.new({id: activity.id, billable: 0.0,
                                             payable: 0.0, downtime: 0.0, lunch: 0.0, minimum_regular: 0.0,
