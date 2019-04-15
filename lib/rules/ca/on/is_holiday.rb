@@ -45,6 +45,8 @@ module Rules
           if check
             @processed_activity[:regular] = 0.0
             @processed_activity[:overtime] = @activity.total_hours
+
+            @base.stop = true
           end
 
           @processed_activity

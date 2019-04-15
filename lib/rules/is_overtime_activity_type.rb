@@ -26,6 +26,7 @@ module Rules
         @base = base
       else
         super(activity, criteria)
+        @base = self
       end
     end
 
@@ -34,9 +35,10 @@ module Rules
     end
 
     def process_activity
-      unless @activity.type == "training" || @activity == "travel"
-        @processed_activity[:regular] = 0.0
-        @processed_activity[:overtime] = @activity.total_hours
+      unless check
+        @processed_activity[:regular] = @activity.total_hours
+
+        @base.stop = true
       end
 
       @processed_activity

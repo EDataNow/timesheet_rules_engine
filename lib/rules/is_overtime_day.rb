@@ -29,13 +29,16 @@ module Rules
         @base = base
       else
         super(activity, criteria)
+        @base = self
       end
     end
 
     def process_activity
-      if is_overtime_day
+      if check
         @processed_activity[:regular] = 0.0
         @processed_activity[:overtime] = @activity.total_hours
+
+        @base.stop = true
       end
 
       @processed_activity
