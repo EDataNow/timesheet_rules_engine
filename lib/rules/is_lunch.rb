@@ -38,6 +38,8 @@ module Rules
       if check
         @processed_activity[:payable] = 0.0
         @processed_activity[:billable] = @activity.total_hours
+        @processed_activity[:regular] = 0.0
+        @processed_activity[:overtime] = 0.0
         @processed_activity[:lunch] = @activity.total_hours
 
         @base.stop = true

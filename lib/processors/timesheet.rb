@@ -8,11 +8,10 @@ module Processors
     DEFAULT_ACTIVITY_RULES = [
                                'IsOvertimeDay',
                                'IsLunch',
+                               'Ca::On::IsHoliday',
                                'IsOvertimePaid',
                                'IsOvertimeActivityType',
-                               'IsOutsideRegularSchedule',
-                               "IsPartialOvertimeDay",
-                               "MaximumDailyHours",
+                               "IsPartialOvertimeDay"
                              ]
 
     DEFAULT_TIMESHEET_RULES =  [

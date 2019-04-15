@@ -50,7 +50,7 @@ module Rules
     end
 
     def process_activity
-      if is_partial_overtime_day
+      if is_partial_overtime_day && @processed_activity[:overtime] == 0.0
         time_difference = calculate_overtime
 
         @processed_activity[:regular] = @activity.total_hours - time_difference

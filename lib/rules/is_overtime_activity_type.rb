@@ -36,6 +36,7 @@ module Rules
 
     def process_activity
       unless check
+        @processed_activity[:overtime] = 0.0
         @processed_activity[:regular] = @activity.total_hours
 
         @base.stop = true

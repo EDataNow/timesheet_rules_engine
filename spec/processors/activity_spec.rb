@@ -168,17 +168,6 @@ module Processors
             end
           end
 
-          # it "should calculate correct overtime hours from started on a regular day but ended on an overtime day while maxed out on daily hours" do
-          #   base = Rules::Base.new(OpenStruct.new(attributes_for(:activity, total_hours: 4.0, from: DateTime.parse("2019-04-05 9:00pm"),
-          #                                                 to: DateTime.parse("2019-04-06 1:00am"))),
-          #                                                 criteria, {current_weekly_hours: 40.0, current_daily_hours: 8.0})
-
-          #   Activity.new(base).calculate_hours
-
-          #   expect(base.processed_activity.regular).to eq(0.0)
-          #   expect(base.processed_activity.overtime).to eq(4.0)
-          # end
-
           it "should calculate correct overtime hours from started on a regular day but ended on an overtime day" do
             base = Rules::Base.new(OpenStruct.new(attributes_for(:activity, total_hours: 4.0, from: DateTime.parse("2019-04-05 9:00pm"),
                                                           to: DateTime.parse("2019-04-06 1:00am"))),
