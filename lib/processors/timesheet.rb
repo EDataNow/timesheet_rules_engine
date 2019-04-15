@@ -121,7 +121,21 @@ module Processors
     end
 
     def qualifies_for_minimum_after_leaving_early?
-      !@left_early && !has_minimum_daily_hours? && @result_timesheet.overtime == 0.0
+      !@left_early && !has_minimum_daily_hours? && @result_timesheet.overtime == 0.0 && !is_holiday?
+    end
+
+    def is_holiday?
+      if @timesheet.activities.count > 0
+        base_rule = Rules::Base.new(@timesheet.activities.first, @options[:criteria], { current_weekly_hours: @current_weekly_hours,
+                                                                      current_daily_hours: @result_timesheet.total,
+                                                                      left_early: @left_early,
+                                                                      country: @options[:country],
+                                                                      region: @options[:region] })
+
+        rule_included?("IsHoliday") ? Object.const_get("Rules::#{@options[:country].camelcase}::#{@options[:region].camelcase}::IsHoliday").new(base_rule).check : false
+      else
+        false
+      end
     end
 
     private
