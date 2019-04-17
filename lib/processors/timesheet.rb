@@ -15,8 +15,8 @@ module Processors
                              ]
 
     DEFAULT_TIMESHEET_RULES =  [
-                                'MinimumDailyHours',
-                                "MaximumDailyHours"
+                                'Incentive::QualifiesForMinimumAfterLeavingEarly',
+                                "Incentive::QualifiesForOvertimeAfterLeavingEarly"
                                ]
     DEFAULTS = {
                   criteria: {
@@ -54,7 +54,7 @@ module Processors
       @left_early = @options[:left_early]
 
       unless @options[:include_rules].empty?
-        @rules = @options[:include_rules]
+        @rules = @options[:include_rules].select {|ir| DEFAULT_TIMESHEET_RULES.include?(ir) }
       else
         @rules = DEFAULT_TIMESHEET_RULES
       end
@@ -91,17 +91,40 @@ module Processors
         base_rule.processed_activity
       end
 
-      if qualifies_for_minimum_after_leaving_early?
-        # One scenario that isn't take care of is the below minimum but
-        # partially on a holiday means 1 regular and 1 overtime hour.
+      base = Rules::Base.new(nil, @options[:criteria], { current_weekly_hours: @current_weekly_hours,
+                                                          current_daily_hours: @result_timesheet.total,
+                                                          left_early: @left_early,
+                                                          country: @options[:country],
+                                                          region: @options[:region],
+                                                          processed_activity: @result_timesheet })
 
-        @result_timesheet[:minimum_regular] = @options[:criteria][:minimum_daily_hours]
-      elsif qualifies_for_overtime?
-        @result_timesheet.overtime = (@result_timesheet.total - @result_timesheet.lunch) - @options[:criteria][:maximum_daily_hours]
-        @result_timesheet.regular = @options[:criteria][:maximum_daily_hours]
+      @rules.each do |rule|
+        get_clazz(rule).new(base).process_activity
+
+        if base.stop
+          break
+        end
       end
 
+      # if qualifies_for_minimum_after_leaving_early?
+      #   # One scenario that isn't take care of is the below minimum but
+      #   # partially on a holiday means 1 regular and 1 overtime hour.
+
+      #   @result_timesheet[:minimum_regular] = @options[:criteria][:minimum_daily_hours]
+      # elsif qualifies_for_overtime?
+      #   @result_timesheet.overtime = (@result_timesheet.total - @result_timesheet.lunch) - @options[:criteria][:maximum_daily_hours]
+      #   @result_timesheet.regular = @options[:criteria][:maximum_daily_hours]
+      # end
+
       @result_timesheet
+    end
+
+    def get_clazz(rule)
+      begin
+        Object.const_get("Rules::#{rule}")
+      rescue
+        nil
+      end
     end
 
     def has_minimum_daily_hours?

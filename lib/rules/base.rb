@@ -23,7 +23,7 @@ module Rules
     attr_accessor :current_weekly_hours, :current_daily_hours, :left_early, :stop
 
     def initialize(activity, criteria={}, context={current_weekly_hours: 0.0, current_daily_hours: 0.0,
-                                                   left_early: false, region: "on", country: "ca"})
+                                                   left_early: false, region: "on", country: "ca", processed_activity: nil})
       @activity = activity
       @stop = false
       @current_weekly_hours = context[:current_weekly_hours]
@@ -33,9 +33,13 @@ module Rules
       @region = context[:region]
       @full_region = "#{@country}_#{@region}"
 
-      @processed_activity = OpenStruct.new({id: activity.id, billable: 0.0,
-                                            payable: 0.0, downtime: 0.0, lunch: 0.0, minimum_regular: 0.0,
-                                            regular: 0.0, overtime: 0.0, total: activity.total_hours})
+      if context[:processed_activity]
+        @processed_activity = context[:processed_activity]
+      else
+        @processed_activity = OpenStruct.new({id: activity.id, billable: 0.0,
+                                              payable: 0.0, downtime: 0.0, lunch: 0.0, minimum_regular: 0.0,
+                                              regular: 0.0, overtime: 0.0, total: activity.total_hours})
+      end
 
       @criteria = DEFAULTS.merge(criteria.symbolize_keys)
     end
