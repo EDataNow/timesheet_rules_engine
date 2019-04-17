@@ -1,16 +1,16 @@
 require 'rspec'
-require 'rules/incentive/qualifies_for_overtime_after_leaving_early'
+require 'rules/incentive/left_early_but_under_minimum_weekly'
 require 'rules/base'
 
 module Rules
   module Incentive
-    describe QualifiesForOvertimeAfterLeavingEarly do
+    describe LeftEarlyButUnderMinimumWeekly do
       describe 'processing' do
         let(:criteria) {
           {
               minimum_daily_hours: 3.0,
               maximum_daily_hours: 8.0,
-              minimum_weekly_hours: 40.0,
+              minimum_weekly_hours: 44.0,
               maximum_weekly_hours: 60.0,
               saturdays_overtime: true,
               sundays_overtime: true,
@@ -25,35 +25,37 @@ module Rules
         }
 
         context 'did leave early' do
-          context 'when activity is goes beyond minimum daily hours' do
+          context 'when activity is goes beyond minimum weekly hours' do
             let(:processed_activity) { OpenStruct.new({id: 1, billable: 0.0, downtime: 0.0, lunch: 0.0,
-                                          regular: 0.0, minimum_regular: 0.0, payable: 0.0, overtime: 0.0, total: 0.0}) }
+                                          regular: 35.0, minimum_regular: 0.0, payable: 0.0, overtime: 26.0, total: 0.0}) }
 
             let(:base) { Base.new(OpenStruct.new(attributes_for(:activity, total_hours: 4.0)), criteria, {current_weekly_hours: 61.0, left_early: true,
                                                                                                           current_daily_hours: 40.0, processed_activity: processed_activity}) }
-            subject { QualifiesForOvertimeAfterLeavingEarly.new(base) }
+            subject { LeftEarlyButUnderMinimumWeekly.new(base) }
 
-            it "should be beyond minimum daily hours" do
+            it "should be not touch it" do
               subject.process_activity
 
-              expect(subject.processed_activity.minimum_regular).to eq(0.0)
+              expect(subject.processed_activity.regular).to eq(35.0)
+              expect(subject.processed_activity.overtime).to eq(26.0)
               expect(subject.check).to be false
             end
           end
 
           context 'when activity is not over minimum daily hours' do
             let(:processed_activity) { OpenStruct.new({id: 1, billable: 0.0, downtime: 0.0, lunch: 0.0,
-                                          regular: 0.0, minimum_regular: 0.0, payable: 0.0, overtime: 0.0, total: 0.0}) }
+                                          regular: 1.0, minimum_regular: 0.0, payable: 0.0, overtime: 1.0, total: 0.0}) }
 
-            let(:base) { Base.new(OpenStruct.new(attributes_for(:activity, total_hours: 4.0)), criteria, {current_weekly_hours: 61.0, left_early: true,
+            let(:base) { Base.new(OpenStruct.new(attributes_for(:activity, total_hours: 4.0)), criteria, {current_weekly_hours: 2.0, left_early: true,
                                                                                                           current_daily_hours: 1.0, processed_activity: processed_activity}) }
-            subject { QualifiesForOvertimeAfterLeavingEarly.new(base) }
+            subject { LeftEarlyButUnderMinimumWeekly.new(base) }
 
-            it "should not be beyond minimum daily hours" do
+            it "should make all overtime hours regular hours" do
               subject.process_activity
 
-              expect(subject.check).to be false
-              expect(subject.processed_activity.minimum_regular).to eq(0.0)
+              expect(subject.check).to be true
+              expect(subject.processed_activity.regular).to eq(2.0)
+              expect(subject.processed_activity.overtime).to eq(0.0)
             end
           end
         end
@@ -63,15 +65,15 @@ module Rules
             let(:processed_activity) { OpenStruct.new({id: 1, billable: 0.0, downtime: 0.0, lunch: 0.0,
                                           regular: 0.0, minimum_regular: 0.0, payable: 0.0, overtime: 0.0, total: 0.0}) }
 
-            let(:base) { Base.new(OpenStruct.new(attributes_for(:activity, total_hours: 4.0)), criteria, {current_weekly_hours: 61.0,
+            let(:base) { Base.new(OpenStruct.new(attributes_for(:activity, total_hours: 4.0)), criteria, {current_weekly_hours: 61.0, left_early: false,
                                                                                                           current_daily_hours: 40.0, processed_activity: processed_activity}) }
-            subject { QualifiesForOvertimeAfterLeavingEarly.new(base) }
+            subject { LeftEarlyButUnderMinimumWeekly.new(base) }
 
-            it "should be beyond minimum daily hours" do
+            it "should not touch it" do
               subject.process_activity
 
-              expect(subject.processed_activity.regular).to eq(8.0)
-              expect(subject.check).to be true
+              expect(subject.processed_activity.regular).to eq(0.0)
+              expect(subject.check).to be false
             end
           end
 
@@ -79,11 +81,11 @@ module Rules
             let(:processed_activity) { OpenStruct.new({id: 1, billable: 0.0, downtime: 0.0, lunch: 0.0,
                                           regular: 1.0, minimum_regular: 0.0, payable: 0.0, overtime: 0.0, total: 0.0}) }
 
-            let(:base) { Base.new(OpenStruct.new(attributes_for(:activity, total_hours: 4.0)), criteria, {current_weekly_hours: 61.0,
+            let(:base) { Base.new(OpenStruct.new(attributes_for(:activity, total_hours: 4.0)), criteria, {current_weekly_hours: 61.0, left_early: false,
                                                                                                           current_daily_hours: 1.0, processed_activity: processed_activity}) }
-            subject { QualifiesForOvertimeAfterLeavingEarly.new(base) }
+            subject { LeftEarlyButUnderMinimumWeekly.new(base) }
 
-            it "should not be beyond minimum daily hours" do
+            it "should not touch it" do
               subject.process_activity
 
               expect(subject.check).to be false

@@ -2,7 +2,7 @@ require 'rules/base'
 
 module Rules
   module Incentive
-    class QualifiesForOvertimeAfterLeavingEarly < ::Rules::Base
+    class QualifiesForWeeklyOvertimeAfterLeavingEarly < ::Rules::Base
       DEFAULTS = {  minimum_daily_hours: 0.0,
                     maximum_daily_hours: 0.0,
                     minimum_weekly_hours: 0.0,
@@ -35,8 +35,8 @@ module Rules
 
       def process_activity
         if check
-          @processed_activity.overtime = (@processed_activity.total - @processed_activity.lunch) - @base.maximum_daily_hours
-          @processed_activity.regular = @base.maximum_daily_hours
+          @processed_activity.overtime = @processed_activity.overtime - (@base.minimum_weekly_hours - @processed_activity.regular)
+          @processed_activity.regular = @base.minimum_weekly_hours
 
           @base.stop = true
         end
@@ -45,11 +45,11 @@ module Rules
       end
 
       def check
-        !@base.left_early && has_maximum_daily_hours?
+        @base.left_early && has_minimum_weekly_hours?
       end
 
-      def has_maximum_daily_hours?
-        @base.current_daily_hours > @base.maximum_daily_hours
+      def has_minimum_weekly_hours?
+        @base.current_weekly_hours > @base.minimum_weekly_hours
       end
     end
   end

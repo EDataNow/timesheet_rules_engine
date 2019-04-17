@@ -16,7 +16,7 @@ module Processors
 
     DEFAULT_TIMESHEET_RULES =  [
                                 'Incentive::QualifiesForMinimumAfterLeavingEarly',
-                                "Incentive::QualifiesForOvertimeAfterLeavingEarly"
+                                "Incentive::QualifiesForDailyOvertimeAfterLeavingEarly"
                                ]
     DEFAULTS = {
                   criteria: {

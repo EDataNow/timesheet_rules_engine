@@ -6,7 +6,8 @@ require 'ostruct'
 module Processors
   class Timesheets
     DEFAULT_WEEKLY_RULES = [
-                               "MinimumWeeklyHours"
+                               "Incentive::QualifiesForWeeklyOvertimeAfterLeavingEarly",
+                               "Incentive::LeftEarlyButUnderMinimumWeekly"
                              ]
 
     DEFAULTS = {
@@ -45,7 +46,7 @@ module Processors
       @left_early = @options[:left_early]
 
       unless @options[:include_rules].empty?
-        @rules = @options[:include_rules]
+        @rules = @options[:include_rules].select {|ir| DEFAULT_WEEKLY_RULES.include?(ir) }
       else
         @rules = DEFAULT_WEEKLY_RULES
       end
@@ -71,12 +72,18 @@ module Processors
         end
       end
 
-      if qualifies_for_overtime_after_leaving_early?
-        @result_timesheets[:overtime] = @result_timesheets[:overtime] - (@options[:criteria][:minimum_weekly_hours] - @result_timesheets[:regular])
-        @result_timesheets[:regular] = @options[:criteria][:minimum_weekly_hours]
-      elsif left_early_but_under_minimum?
-        @result_timesheets[:regular] += @result_timesheets[:overtime]
-        @result_timesheets[:overtime] = 0.0
+      base = Rules::Base.new(nil, @options[:criteria], { current_weekly_hours: @current_weekly_hours,
+                                                          left_early: @left_early,
+                                                          country: @options[:country],
+                                                          region: @options[:region],
+                                                          processed_activity: @result_timesheets })
+
+      @rules.each do |rule|
+        get_clazz(rule).new(base).process_activity
+
+        if base.stop
+          break
+        end
       end
 
       @result_timesheets
@@ -84,23 +91,11 @@ module Processors
 
     private
 
-    def left_early_but_under_minimum?
-      @left_early && !has_minimum_weekly_hours?
-    end
-
-    def qualifies_for_overtime_after_leaving_early?
-      @left_early && has_minimum_weekly_hours?
-    end
-
-    def has_minimum_weekly_hours?
-      rule_included?("MinimumWeeklyHours") ? Object.const_get("Rules::#{@options[:country].camelcase}::#{@options[:region].camelcase}::MinimumWeeklyHours").check(current_weekly_hours, @options[:criteria][:minimum_weekly_hours]) : true
-    end
-
-    def rule_included?(rule)
+    def get_clazz(rule)
       begin
-        Object.const_get("Rules::#{@options[:country].camelcase}::#{@options[:region].camelcase}::#{rule}").present? && @rules.include?(rule)
+        Object.const_get("Rules::#{rule}")
       rescue
-        false
+        nil
       end
     end
   end
