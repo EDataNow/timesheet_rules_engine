@@ -127,37 +127,37 @@ module Processors
       end
     end
 
-    def has_minimum_daily_hours?
-      if rule_included?("MinimumDailyHours")
-        Object.const_get("Rules::#{@options[:country].camelcase}::#{@options[:region].camelcase}::MinimumDailyHours").check(
-                            @result_timesheet.total,
-                            @options[:criteria][:minimum_daily_hours])
-      else
-        true
-      end
-    end
+    # def has_minimum_daily_hours?
+    #   if rule_included?("MinimumDailyHours")
+    #     Object.const_get("Rules::#{@options[:country].camelcase}::#{@options[:region].camelcase}::MinimumDailyHours").check(
+    #                         @result_timesheet.total,
+    #                         @options[:criteria][:minimum_daily_hours])
+    #   else
+    #     true
+    #   end
+    # end
 
-    def has_maximum_daily_hours?
-      rule_included?("MaximumDailyHours") ? Object.const_get("Rules::#{@options[:country].camelcase}::#{@options[:region].camelcase}::MaximumDailyHours").check(@result_timesheet.total, @options[:criteria][:maximum_daily_hours]) : false
-    end
+    # def has_maximum_daily_hours?
+    #   rule_included?("MaximumDailyHours") ? Object.const_get("Rules::#{@options[:country].camelcase}::#{@options[:region].camelcase}::MaximumDailyHours").check(@result_timesheet.total, @options[:criteria][:maximum_daily_hours]) : false
+    # end
 
-    def qualifies_for_overtime?
-      !@left_early && has_maximum_daily_hours?
-    end
+    # def qualifies_for_overtime?
+    #   !@left_early && has_maximum_daily_hours?
+    # end
 
-    def qualifies_for_minimum_after_leaving_early?
-      !@left_early && !has_minimum_daily_hours? && @result_timesheet.overtime == 0.0
-    end
+    # def qualifies_for_minimum_after_leaving_early?
+    #   !@left_early && !has_minimum_daily_hours? && @result_timesheet.overtime == 0.0
+    # end
 
-    private
+    # private
 
-    def rule_included?(rule)
-      begin
-        Object.const_get("Rules::#{@options[:country].camelcase}::#{@options[:region].camelcase}::#{rule}").present? && @rules.include?(rule)
-      rescue
-        false
-      end
-    end
+    # def rule_included?(rule)
+    #   begin
+    #     Object.const_get("Rules::#{@options[:country].camelcase}::#{@options[:region].camelcase}::#{rule}").present? && @rules.include?(rule)
+    #   rescue
+    #     false
+    #   end
+    # end
 
   end
 end
