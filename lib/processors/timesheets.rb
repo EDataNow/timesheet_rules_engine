@@ -53,10 +53,6 @@ module Processors
 
       @options[:exclude_rules].each {|er| @rules.reject!{|r| r == er }}
 
-      if @options[:criteria][:scheduled_shift].nil?
-        @options[:criteria][:scheduled_shift] = @options[:shift]
-      end
-
       @processed_timesheets = processed_timesheets
     end
 
@@ -81,9 +77,7 @@ module Processors
       @rules.each do |rule|
         get_clazz(rule).new(base).process_activity
 
-        if base.stop
-          break
-        end
+        break if base.stop
       end
 
       @result_timesheets

@@ -24,9 +24,7 @@ module Processors
       @rules.each do |rule|
         get_clazz(rule).new(@base).process_activity
 
-        if @base.stop
-          break
-        end
+        break if @base.stop
       end
 
       if @base.processed_activity[:regular] == 0.0 &&

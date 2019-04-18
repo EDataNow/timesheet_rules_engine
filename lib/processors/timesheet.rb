@@ -8,10 +8,10 @@ module Processors
     DEFAULT_ACTIVITY_RULES = [
                                'IsOvertimeDay',
                                'IsLunch',
-                               'Ca::On::IsHoliday',
                                'IsOvertimePaid',
                                'IsOvertimeActivityType',
-                               "IsPartialOvertimeDay"
+                               "IsPartialOvertimeDay",
+                              #  'Ca::On::IsHoliday'
                              ]
 
     DEFAULT_TIMESHEET_RULES =  [
@@ -75,7 +75,8 @@ module Processors
         if @options[:no_rules]
           base_rule.process_activity
         else
-          activity_rules = DEFAULT_ACTIVITY_RULES.reject{|r| @options[:exclude_rules].include?(r) }
+          activity_rules = DEFAULT_ACTIVITY_RULES + regional_rules
+          activity_rules = activity_rules.reject{|r| @options[:exclude_rules].include?(r) }
 
           if @options[:include_rules].present?
             activity_rules = @options[:include_rules]
@@ -101,22 +102,21 @@ module Processors
       @rules.each do |rule|
         get_clazz(rule).new(base).process_activity
 
-        if base.stop
-          break
-        end
+        break if base.stop
       end
 
-      # if qualifies_for_minimum_after_leaving_early?
-      #   # One scenario that isn't take care of is the below minimum but
-      #   # partially on a holiday means 1 regular and 1 overtime hour.
-
-      #   @result_timesheet[:minimum_regular] = @options[:criteria][:minimum_daily_hours]
-      # elsif qualifies_for_overtime?
-      #   @result_timesheet.overtime = (@result_timesheet.total - @result_timesheet.lunch) - @options[:criteria][:maximum_daily_hours]
-      #   @result_timesheet.regular = @options[:criteria][:maximum_daily_hours]
-      # end
-
       @result_timesheet
+    end
+
+    def regional_rules
+      begin
+        Object.const_get("Rules::#{@options[:country].camelcase}::#{@options[:region].camelcase}").constants.map do |clazz|
+          "#{@options[:country].camelcase}::#{@options[:region].camelcase}::#{clazz.to_s}"
+        end
+      rescue
+        puts "THERE ARE NO RULES FOR THIS COUNTRY / REGION"
+        []
+      end
     end
 
     def get_clazz(rule)
@@ -126,38 +126,6 @@ module Processors
         nil
       end
     end
-
-    # def has_minimum_daily_hours?
-    #   if rule_included?("MinimumDailyHours")
-    #     Object.const_get("Rules::#{@options[:country].camelcase}::#{@options[:region].camelcase}::MinimumDailyHours").check(
-    #                         @result_timesheet.total,
-    #                         @options[:criteria][:minimum_daily_hours])
-    #   else
-    #     true
-    #   end
-    # end
-
-    # def has_maximum_daily_hours?
-    #   rule_included?("MaximumDailyHours") ? Object.const_get("Rules::#{@options[:country].camelcase}::#{@options[:region].camelcase}::MaximumDailyHours").check(@result_timesheet.total, @options[:criteria][:maximum_daily_hours]) : false
-    # end
-
-    # def qualifies_for_overtime?
-    #   !@left_early && has_maximum_daily_hours?
-    # end
-
-    # def qualifies_for_minimum_after_leaving_early?
-    #   !@left_early && !has_minimum_daily_hours? && @result_timesheet.overtime == 0.0
-    # end
-
-    # private
-
-    # def rule_included?(rule)
-    #   begin
-    #     Object.const_get("Rules::#{@options[:country].camelcase}::#{@options[:region].camelcase}::#{rule}").present? && @rules.include?(rule)
-    #   rescue
-    #     false
-    #   end
-    # end
 
   end
 end

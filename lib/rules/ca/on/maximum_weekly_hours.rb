@@ -31,6 +31,9 @@ module Rules
           end
         end
 
+        def process_activity
+        end
+
         def check
           @base.current_weekly_hours > @base.maximum_weekly_hours
         end
