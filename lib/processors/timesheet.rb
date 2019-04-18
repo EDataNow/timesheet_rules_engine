@@ -10,7 +10,7 @@ module Processors
                                'IsLunch',
                                'IsOvertimePaid',
                                'IsOvertimeActivityType',
-                               "IsPartialOvertimeDay",
+                              #  "Ca::On::IsPartialOvertimeDay",
                               #  'Ca::On::IsHoliday'
                              ]
 
@@ -60,37 +60,11 @@ module Processors
       end
 
       @options[:exclude_rules].each {|er| @rules.reject!{|r| r == er }}
-
       @options[:criteria][:scheduled_shift] = timesheet.shift if timesheet.shift
     end
 
     def process_timesheet
-      @timesheet.activities.map do |activity|
-        base_rule = Rules::Base.new(activity, @options[:criteria], { current_weekly_hours: @current_weekly_hours,
-                                                                     current_daily_hours: @result_timesheet.total,
-                                                                     left_early: @left_early,
-                                                                     country: @options[:country],
-                                                                     region: @options[:region] })
-
-        if @options[:no_rules]
-          base_rule.process_activity
-        else
-          activity_rules = DEFAULT_ACTIVITY_RULES + regional_rules
-          activity_rules = activity_rules.reject{|r| @options[:exclude_rules].include?(r) }
-
-          if @options[:include_rules].present?
-            activity_rules = @options[:include_rules]
-          end
-
-          Activity.new(base_rule, activity_rules).calculate_hours
-        end
-
-        [:billable, :regular, :payable, :overtime, :downtime, :lunch, :total].each do |attribute|
-          @result_timesheet[attribute] += base_rule.processed_activity[attribute]
-        end
-
-        base_rule.processed_activity
-      end
+      process_activities
 
       base = Rules::Base.new(nil, @options[:criteria], { current_weekly_hours: @current_weekly_hours,
                                                           current_daily_hours: @result_timesheet.total,
@@ -108,7 +82,38 @@ module Processors
       @result_timesheet
     end
 
-    def regional_rules
+    def process_activities
+      @timesheet.activities.map do |activity|
+        base_rule = Rules::Base.new(activity, @options[:criteria], { current_weekly_hours: @current_weekly_hours,
+                                                                     current_daily_hours: @result_timesheet.total,
+                                                                     left_early: @left_early,
+                                                                     country: @options[:country],
+                                                                     region: @options[:region] })
+
+        if @options[:no_rules]
+          base_rule.process_activity
+        else
+          activity_rules = DEFAULT_ACTIVITY_RULES + regional_activity_rules
+          activity_rules = activity_rules.reject{|r| @options[:exclude_rules].include?(r) }
+
+          if @options[:include_rules].present?
+            activity_rules = @options[:include_rules]
+          end
+
+          Activity.new(base_rule, activity_rules).calculate_hours
+        end
+
+        [:billable, :regular, :payable, :overtime, :downtime, :lunch, :total].each do |attribute|
+          @result_timesheet[attribute] += base_rule.processed_activity[attribute]
+        end
+
+        base_rule.processed_activity
+      end
+    end
+
+    private
+
+    def regional_activity_rules
       begin
         Object.const_get("Rules::#{@options[:country].camelcase}::#{@options[:region].camelcase}").constants.map do |clazz|
           "#{@options[:country].camelcase}::#{@options[:region].camelcase}::#{clazz.to_s}"

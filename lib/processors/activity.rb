@@ -8,10 +8,10 @@ module Processors
     DEFAULT_ACTIVITY_RULES = [
                                'IsOvertimeDay',
                                'IsLunch',
-                               'Ca::On::IsHoliday',
                                'IsOvertimePaid',
                                'IsOvertimeActivityType',
-                               "IsPartialOvertimeDay"
+                               "Ca::On::IsPartialOvertimeDay",
+                               'Ca::On::IsHoliday'
                              ]
     attr_reader :base, :rules
 
@@ -57,38 +57,6 @@ module Processors
       rescue
         nil
       end
-    end
-
-    def is_overtime_paid?
-      rule_included?("IsOvertimePaid") ? Rules::IsOvertimePaid.new(@base).check : true
-    end
-
-    def is_overtime_activity_type?
-      rule_included?("IsOvertimeActivityType") ? Rules::IsOvertimeActivityType.new(@base).check : true
-    end
-
-    def is_partial_overtime_day?
-      rule_included?("IsPartialOvertimeDay") ? Rules::IsPartialOvertimeDay.new(@base).check : false
-    end
-
-    def is_overtime_day?
-      rule_included?("IsOvertimeDay") ? Rules::IsOvertimeDay.new(@base).check : false
-    end
-
-    def is_holiday?
-      rule_included?("IsHoliday") ? Object.const_get("Rules::#{@base.country.camelcase}::#{@base.region.camelcase}::IsHoliday").new(@base).check : false
-    end
-
-    def is_outside_regular_schedule?
-      rule_included?("IsOutsideRegularSchedule") ? Rules::IsOutsideRegularSchedule.new(@base).check : false
-    end
-
-    def is_lunch?
-      rule_included?("IsLunch") ? Rules::IsLunch.new(@base).check : false
-    end
-
-    def rule_included?(rule)
-      @rules.include?(rule)
     end
   end
 end

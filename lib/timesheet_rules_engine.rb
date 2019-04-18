@@ -18,15 +18,15 @@ class TimesheetRulesEngine
   end
 
   def process_timesheets
-    if @timesheets.any? {|t| t.left_early }
-      @left_early = true
-    end
+    @left_early = @timesheets.any?(&:left_early)
 
     @result_timesheets = @timesheets.map do |timesheet|
       timesheet = Processors::Timesheet.new(timesheet,
-                                            @options.merge({current_weekly_hours:
-                                                            @current_weekly_hours,
-                                                            left_early: @left_early})).process_timesheet
+                                            @options.merge({
+                                                            current_weekly_hours: @current_weekly_hours,
+                                                            left_early: @left_early
+                                                          })
+                                            ).process_timesheet
 
       @current_weekly_hours += timesheet.total
 
