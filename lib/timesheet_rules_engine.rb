@@ -3,7 +3,7 @@ require 'processors/timesheets'
 
 class TimesheetRulesEngine
   DEFAULTS = { include_rules: [], exclude_rules: [], no_rules: false,
-               country: "ca", region: "on"
+               country: "ca", region: "on", exclude_incentive_rules: false
              }
 
   attr_reader :current_weekly_hours, :left_early

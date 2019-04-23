@@ -30,6 +30,7 @@ module Processors
                   include_rules: [],
                   exclude_rules: [],
                   left_early: false,
+                  exclude_incentive_rules: false,
                   country: "ca", region: "on"
                 }
 
@@ -52,6 +53,10 @@ module Processors
       end
 
       @options[:exclude_rules].each {|er| @rules.reject!{|r| r == er }}
+
+      if @options[:exclude_incentive_rules]
+        @rules = []
+      end
 
       @processed_timesheets = processed_timesheets
     end

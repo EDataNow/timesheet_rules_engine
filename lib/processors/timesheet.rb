@@ -31,13 +31,13 @@ module Processors
                               decimal_place: 2,
                               billable_hour: 0.25,
                               closest_minute: 8.0,
-                              region: "ca_on",
                               scheduled_shift: nil
                             },
                   current_weekly_hours: 0.0,
                   include_rules: [],
                   exclude_rules: [],
                   no_rules: false,
+                  exclude_incentive_rules: false,
                   country: "ca", region: "on"
                 }
 
@@ -57,6 +57,10 @@ module Processors
         @rules = @options[:include_rules].select {|ir| DEFAULT_TIMESHEET_RULES.include?(ir) }
       else
         @rules = DEFAULT_TIMESHEET_RULES
+      end
+
+      if @options[:exclude_incentive_rules]
+        @rules = []
       end
 
       @options[:exclude_rules].each {|er| @rules.reject!{|r| r == er }}

@@ -9,17 +9,25 @@
         - [Criteria Options](#criteria-options)
 - [Output](#output)
 - [Rules](#rules)
+  - [Regional](#regional)
+  - [Incentive](#incentive)
+- [Excluding/Including Rules](#excluding/including-rules)
 
 # Overview
 `timesheet_rules_engine` is a rules engine that is used to process timesheets and spit out the Billable, Regular, Payable, Overtime, Downtime, Lunch and Total hours for a given set of timesheets.
 
 # Installing
 Add
-`gem 'timesheet_rules_engine', git: 'https://github.com/EDataNow/timesheet_rules_engine', branch: 'master'`
+
+```ruby
+gem 'timesheet_rules_engine', git: 'https://github.com/EDataNow/timesheet_rules_engine', branch: 'master'
+```
 
 to your Gemfile and
 
-`bundle install`
+```ruby
+bundle install
+```
 
 # Basic Usage
 
@@ -53,25 +61,43 @@ eg.
 
 ## Options
 
-`include_rules`
+`country` (String)
+
+The country you are in.
+
+**Default: 'ca'**
+
+`region` (String)
+
+The region of the country you are in.
+
+**Default: 'on'**
+
+`exclude_incentive_rules` (Boolean)
+
+If you want to exclude all incentive rules from being used.
+
+**Default: false**
+
+`include_rules` (Array of Strings)
 
 The list of [rules](#rules) that will be applied, empty means **all**.
 
 **Default: []**
 
-`exclude_rules`
+`exclude_rules` (Array of Strings)
 
 The list of [rules](#rules) that will be excluded from being applied, empty means **none**.
 
 **Default: []**
 
-`no_rules`
+`no_rules` (Boolean)
 
 If true, will apply no rules.
 
 **Default: false**
 
-`criteria`
+`criteria` (Hash)
 
 This is a hash that includes the following information on default but can be modified by passing in your own via options hash
 
@@ -91,7 +117,6 @@ This is a hash that includes the following information on default but can be mod
   decimal_place: 2,
   billable_hour: 0.25,
   closest_minute: 8.0,
-  region: "ca_on",
   scheduled_shift: nil
 }
 ```
@@ -114,7 +139,6 @@ This will result in a hash that has a structure like
 ```
 
 # Rules
-
 - `IsBilled`
 - `IsDowntime`
 - `IsLunch`
@@ -123,8 +147,23 @@ This will result in a hash that has a structure like
 - `IsOvertimeDay`
 - `IsOvertimePaid`
 - `IsPaid`
-- `IsPartialOvertimeDay`
-- `MaximumDailyHours`
-- `MaximumWeeklyHours`
-- `MinimumDailyHours`
-- `MinimumWeeklyHours`
+
+## Regional
+- ### CA
+  - ### ON
+    - `IsHoliday`
+    - `IsPartialOvertimeDay`
+    - `MaximumDailyHours`
+    - `MaximumWeeklyHours`
+    - `MinimumDailyHours`
+    - `MinimumWeeklyHours`
+## Incentive
+- `LeftEarlyButUnderMinimumWeekly`
+- `QualifiesForDailyOvertimeAfterLeavingEarly`
+- `QualifiesForMinimumAfterLeavingEarly`
+- `QualifiesForWeeklyOvertimeAfterLeavingEarly`
+
+# Excluding/Including Rules
+If using exclude_rules or include_rules you will have to include the full path/class name for those rules. E.g 'Ca::On::IsHoliday', 'Incentive::LeftEarlyButUnderMinimumWeekly'.
+
+If you want to exclude all incentive rules then use the option above.
