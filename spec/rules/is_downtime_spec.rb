@@ -23,7 +23,7 @@ module Rules
       }
 
       context 'when activity is downtime' do
-        let(:lunch) { IsDowntime.new(nil, OpenStruct.new(attributes_for(:activity, type: "downtime")), criteria) }
+        let(:lunch) { IsDowntime.new(nil, OpenStruct.new(attributes_for(:activity, kind: "downtime")), criteria) }
         subject { lunch.process_activity }
 
         it "should calculate downtime to be the same as total hours" do

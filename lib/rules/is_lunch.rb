@@ -31,7 +31,7 @@ module Rules
     end
 
     def check
-      @activity.type == "lunch"
+      @activity.kind == "lunch"
     end
 
     def process_activity

@@ -23,7 +23,7 @@ module Rules
       }
 
       context 'when activity is lunch' do
-        let(:lunch) { IsLunch.new(nil, OpenStruct.new(attributes_for(:activity, type: "lunch")), criteria) }
+        let(:lunch) { IsLunch.new(nil, OpenStruct.new(attributes_for(:activity, kind: "lunch")), criteria) }
         subject { lunch.process_activity }
 
         it "should calculate payable to be the same as total hours" do

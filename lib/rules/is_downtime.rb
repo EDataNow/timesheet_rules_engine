@@ -30,7 +30,7 @@ module Rules
     end
 
     def check
-      @activity.type == "downtime"
+      @activity.kind == "downtime"
     end
 
     def process_activity

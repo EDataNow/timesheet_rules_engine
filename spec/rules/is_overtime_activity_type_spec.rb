@@ -23,7 +23,7 @@ module Rules
       }
 
       context 'when activity is training' do
-        let(:overtime) { IsOvertimeActivityType.new(nil, OpenStruct.new(attributes_for(:activity, type: "training")), criteria) }
+        let(:overtime) { IsOvertimeActivityType.new(nil, OpenStruct.new(attributes_for(:activity, kind: "training")), criteria) }
         subject { overtime.check }
 
         it "should not qualify for overtime" do

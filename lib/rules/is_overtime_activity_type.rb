@@ -31,7 +31,7 @@ module Rules
     end
 
     def check
-      @activity.type != "training" && @activity.type != "travel"
+      @activity.kind != "training" && @activity.kind != "travel"
     end
 
     def process_activity

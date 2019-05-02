@@ -43,7 +43,7 @@ module Processors
       context 'overtime is paid' do
         context 'is not an overtime activity type' do
           it "should have all hours in regular" do
-            base = Rules::Base.new(OpenStruct.new(attributes_for(:activity, total_hours: 3.0, type: "travel", from: DateTime.parse("2018-01-03 6:01am"),
+            base = Rules::Base.new(OpenStruct.new(attributes_for(:activity, total_hours: 3.0, kind: "travel", from: DateTime.parse("2018-01-03 6:01am"),
                                                           to: DateTime.parse("2018-01-03 9:05am"))),
                                                           criteria)
 
@@ -155,7 +155,7 @@ module Processors
                              country: "ca", region: "on"} }
 
             it "should not calculate overtime at all under any circumstances" do
-              base = Rules::Base.new(OpenStruct.new(attributes_for(:activity, type: "lunch", total_hours: 1.0, from: DateTime.parse("2019-04-05 12:00pm"),
+              base = Rules::Base.new(OpenStruct.new(attributes_for(:activity, kind: "lunch", total_hours: 1.0, from: DateTime.parse("2019-04-05 12:00pm"),
                                                             to: DateTime.parse("2019-04-05 1:00pm"))),
                                                             criteria, {current_weekly_hours: 40.0, current_daily_hours: 8.0,
                                                                        country: "ca", region: "on"})

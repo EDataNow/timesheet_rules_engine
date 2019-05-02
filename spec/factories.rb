@@ -16,7 +16,7 @@ FactoryBot.define do
 
   factory :activity, class: Hash do
     id { 1 }
-    type { nil }
+    kind { nil }
     total_hours { 1.0 }
     paid { true }
     paid_overtime { true }

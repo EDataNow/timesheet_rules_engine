@@ -44,25 +44,25 @@ module Processors
 
         it "should calculate to have all hours in overtime except training and lunch" do
           activities = [
-            OpenStruct.new(attributes_for(:activity, type: "shift_prep", from: DateTime.parse("2019-04-06 7:00am"),
+            OpenStruct.new(attributes_for(:activity, kind: "shift_prep", from: DateTime.parse("2019-04-06 7:00am"),
                                                                     to: DateTime.parse("2019-04-06 7:23am"), total_hours: 0.50)),
-            OpenStruct.new(attributes_for(:activity, type: "job", from: DateTime.parse("2019-04-06 7:25am"),
+            OpenStruct.new(attributes_for(:activity, kind: "job", from: DateTime.parse("2019-04-06 7:25am"),
                                                                     to: DateTime.parse("2019-04-06 8:00am"), total_hours: 0.50)),
-            OpenStruct.new(attributes_for(:activity, type: "downtime", from: DateTime.parse("2019-04-06 8:00am"),
+            OpenStruct.new(attributes_for(:activity, kind: "downtime", from: DateTime.parse("2019-04-06 8:00am"),
                                                                     to: DateTime.parse("2019-04-06 8:35am"), total_hours: 0.50)),
-            OpenStruct.new(attributes_for(:activity, type: "job", from: DateTime.parse("2019-04-06 8:35am"),
+            OpenStruct.new(attributes_for(:activity, kind: "job", from: DateTime.parse("2019-04-06 8:35am"),
                                                                     to: DateTime.parse("2019-04-06 9:20am"), total_hours: 0.75)),
-            OpenStruct.new(attributes_for(:activity, type: "job", from: DateTime.parse("2019-04-06 9:20am"),
+            OpenStruct.new(attributes_for(:activity, kind: "job", from: DateTime.parse("2019-04-06 9:20am"),
                                                                     to: DateTime.parse("2019-04-06 10:00am"), total_hours: 0.75)),
-            OpenStruct.new(attributes_for(:activity, type: "lunch", from: DateTime.parse("2019-04-06 10:00am"),
+            OpenStruct.new(attributes_for(:activity, kind: "lunch", from: DateTime.parse("2019-04-06 10:00am"),
                                                                     to: DateTime.parse("2019-04-06 11:00am"), total_hours: 1.0)),
-            OpenStruct.new(attributes_for(:activity, type: "training", from: DateTime.parse("2019-04-06 11:00am"),
+            OpenStruct.new(attributes_for(:activity, kind: "training", from: DateTime.parse("2019-04-06 11:00am"),
                                                                     to: DateTime.parse("2019-04-06 12:00pm"), total_hours: 1.0)),
-            OpenStruct.new(attributes_for(:activity, type: "job", from: DateTime.parse("2019-04-06 12:00pm"),
+            OpenStruct.new(attributes_for(:activity, kind: "job", from: DateTime.parse("2019-04-06 12:00pm"),
                                                                     to: DateTime.parse("2019-04-06 1:45pm"), total_hours: 1.75)),
-            OpenStruct.new(attributes_for(:activity, type: "job", from: DateTime.parse("2019-04-06 1:45pm"),
+            OpenStruct.new(attributes_for(:activity, kind: "job", from: DateTime.parse("2019-04-06 1:45pm"),
                                                                     to: DateTime.parse("2019-04-06 2:30pm"), total_hours: 0.75)),
-            OpenStruct.new(attributes_for(:activity, type: "other", from: DateTime.parse("2019-04-06 2:30pm"),
+            OpenStruct.new(attributes_for(:activity, kind: "other", from: DateTime.parse("2019-04-06 2:30pm"),
                                                                     to: DateTime.parse("2019-04-06 3:00pm"), total_hours: 0.50))
           ]
 
@@ -77,9 +77,9 @@ module Processors
         context 'left early but for a legit reason and worked under minimum daily hours' do
           it "should have a minimum regular of 3.0 and a regular of 1.0" do
             activities = [
-              OpenStruct.new(attributes_for(:activity, type: "shift_prep", from: DateTime.parse("2019-04-04 7:00am"),
+              OpenStruct.new(attributes_for(:activity, kind: "shift_prep", from: DateTime.parse("2019-04-04 7:00am"),
                                                                       to: DateTime.parse("2019-04-04 7:30am"), total_hours: 0.50)),
-              OpenStruct.new(attributes_for(:activity, type: "job", from: DateTime.parse("2019-04-04 7:30am"),
+              OpenStruct.new(attributes_for(:activity, kind: "job", from: DateTime.parse("2019-04-04 7:30am"),
                                                                       to: DateTime.parse("2019-04-04 8:00am"), total_hours: 0.50))
             ]
 
@@ -94,9 +94,9 @@ module Processors
         context 'left early for a not legit reason and worked under minimum daily hours' do
           it "should have a minimum regular of 3.0 and a regular of 1.0" do
             activities = [
-              OpenStruct.new(attributes_for(:activity, type: "shift_prep", from: DateTime.parse("2019-04-04 7:00am"),
+              OpenStruct.new(attributes_for(:activity, kind: "shift_prep", from: DateTime.parse("2019-04-04 7:00am"),
                                                                       to: DateTime.parse("2019-04-04 7:30am"), total_hours: 0.50)),
-              OpenStruct.new(attributes_for(:activity, type: "job", from: DateTime.parse("2019-04-04 7:30am"),
+              OpenStruct.new(attributes_for(:activity, kind: "job", from: DateTime.parse("2019-04-04 7:30am"),
                                                                       to: DateTime.parse("2019-04-04 8:00am"), total_hours: 0.50))
             ]
 
@@ -110,25 +110,25 @@ module Processors
 
         it "should calculate to have 8 regular hours and 0 overtime hour when they came in early but worked scheduled hours with realistic times" do
           activities = [
-            OpenStruct.new(attributes_for(:activity, type: "shift_prep", from: DateTime.parse("2019-04-04 6:00am"),
+            OpenStruct.new(attributes_for(:activity, kind: "shift_prep", from: DateTime.parse("2019-04-04 6:00am"),
                                                                     to: DateTime.parse("2019-04-04 7:23am"), total_hours: 1.50)),
-            OpenStruct.new(attributes_for(:activity, type: "job", from: DateTime.parse("2019-04-04 7:25am"),
+            OpenStruct.new(attributes_for(:activity, kind: "job", from: DateTime.parse("2019-04-04 7:25am"),
                                                                     to: DateTime.parse("2019-04-04 8:00am"), total_hours: 0.50)),
-            OpenStruct.new(attributes_for(:activity, type: "downtime", from: DateTime.parse("2019-04-04 8:00am"),
+            OpenStruct.new(attributes_for(:activity, kind: "downtime", from: DateTime.parse("2019-04-04 8:00am"),
                                                                     to: DateTime.parse("2019-04-04 8:35am"), total_hours: 0.50)),
-            OpenStruct.new(attributes_for(:activity, type: "job", from: DateTime.parse("2019-04-04 8:35am"),
+            OpenStruct.new(attributes_for(:activity, kind: "job", from: DateTime.parse("2019-04-04 8:35am"),
                                                                     to: DateTime.parse("2019-04-04 9:20am"), total_hours: 0.75)),
-            OpenStruct.new(attributes_for(:activity, type: "job", from: DateTime.parse("2019-04-04 9:20am"),
+            OpenStruct.new(attributes_for(:activity, kind: "job", from: DateTime.parse("2019-04-04 9:20am"),
                                                                     to: DateTime.parse("2019-04-04 10:00am"), total_hours: 0.75)),
-            OpenStruct.new(attributes_for(:activity, type: "lunch", from: DateTime.parse("2019-04-04 10:00am"),
+            OpenStruct.new(attributes_for(:activity, kind: "lunch", from: DateTime.parse("2019-04-04 10:00am"),
                                                                     to: DateTime.parse("2019-04-04 11:00am"), total_hours: 1.0)),
-            OpenStruct.new(attributes_for(:activity, type: "training", from: DateTime.parse("2019-04-04 11:00am"),
+            OpenStruct.new(attributes_for(:activity, kind: "training", from: DateTime.parse("2019-04-04 11:00am"),
                                                                     to: DateTime.parse("2019-04-04 12:00pm"), total_hours: 1.0)),
-            OpenStruct.new(attributes_for(:activity, type: "job", from: DateTime.parse("2019-04-04 12:00pm"),
+            OpenStruct.new(attributes_for(:activity, kind: "job", from: DateTime.parse("2019-04-04 12:00pm"),
                                                                     to: DateTime.parse("2019-04-04 1:45pm"), total_hours: 1.75)),
-            OpenStruct.new(attributes_for(:activity, type: "job", from: DateTime.parse("2019-04-04 1:45pm"),
+            OpenStruct.new(attributes_for(:activity, kind: "job", from: DateTime.parse("2019-04-04 1:45pm"),
                                                                     to: DateTime.parse("2019-04-04 2:30pm"), total_hours: 0.75)),
-            OpenStruct.new(attributes_for(:activity, type: "other", from: DateTime.parse("2019-04-04 2:30pm"),
+            OpenStruct.new(attributes_for(:activity, kind: "other", from: DateTime.parse("2019-04-04 2:30pm"),
                                                                     to: DateTime.parse("2019-04-04 3:00pm"), total_hours: 0.50))
           ]
 
@@ -142,25 +142,25 @@ module Processors
 
         it "should calculate to have 8 regular hours and 1 overtime hour when they came in early but worked scheduled hours" do
           activities = [
-            OpenStruct.new(attributes_for(:activity, type: "shift_prep", from: DateTime.parse("2019-04-04 5:00am"),
+            OpenStruct.new(attributes_for(:activity, kind: "shift_prep", from: DateTime.parse("2019-04-04 5:00am"),
                                                                     to: DateTime.parse("2019-04-04 7:30am"), total_hours: 2.50)),
-            OpenStruct.new(attributes_for(:activity, type: "job", from: DateTime.parse("2019-04-04 7:30am"),
+            OpenStruct.new(attributes_for(:activity, kind: "job", from: DateTime.parse("2019-04-04 7:30am"),
                                                                     to: DateTime.parse("2019-04-04 8:00am"), total_hours: 0.50)),
-            OpenStruct.new(attributes_for(:activity, type: "downtime", from: DateTime.parse("2019-04-04 8:00am"),
+            OpenStruct.new(attributes_for(:activity, kind: "downtime", from: DateTime.parse("2019-04-04 8:00am"),
                                                                     to: DateTime.parse("2019-04-04 8:30am"), total_hours: 0.50)),
-            OpenStruct.new(attributes_for(:activity, type: "job", from: DateTime.parse("2019-04-04 8:30am"),
+            OpenStruct.new(attributes_for(:activity, kind: "job", from: DateTime.parse("2019-04-04 8:30am"),
                                                                     to: DateTime.parse("2019-04-04 9:15am"), total_hours: 0.75)),
-            OpenStruct.new(attributes_for(:activity, type: "job", from: DateTime.parse("2019-04-04 9:15am"),
+            OpenStruct.new(attributes_for(:activity, kind: "job", from: DateTime.parse("2019-04-04 9:15am"),
                                                                     to: DateTime.parse("2019-04-04 10:00am"), total_hours: 0.75)),
-            OpenStruct.new(attributes_for(:activity, type: "lunch", from: DateTime.parse("2019-04-04 10:00am"),
+            OpenStruct.new(attributes_for(:activity, kind: "lunch", from: DateTime.parse("2019-04-04 10:00am"),
                                                                     to: DateTime.parse("2019-04-04 11:00am"), total_hours: 1.0)),
-            OpenStruct.new(attributes_for(:activity, type: "training", from: DateTime.parse("2019-04-04 11:00am"),
+            OpenStruct.new(attributes_for(:activity, kind: "training", from: DateTime.parse("2019-04-04 11:00am"),
                                                                     to: DateTime.parse("2019-04-04 12:00pm"), total_hours: 1.0)),
-            OpenStruct.new(attributes_for(:activity, type: "job", from: DateTime.parse("2019-04-04 12:00pm"),
+            OpenStruct.new(attributes_for(:activity, kind: "job", from: DateTime.parse("2019-04-04 12:00pm"),
                                                                     to: DateTime.parse("2019-04-04 1:45pm"), total_hours: 1.75)),
-            OpenStruct.new(attributes_for(:activity, type: "job", from: DateTime.parse("2019-04-04 1:45pm"),
+            OpenStruct.new(attributes_for(:activity, kind: "job", from: DateTime.parse("2019-04-04 1:45pm"),
                                                                     to: DateTime.parse("2019-04-04 2:30pm"), total_hours: 0.75)),
-            OpenStruct.new(attributes_for(:activity, type: "other", from: DateTime.parse("2019-04-04 2:30pm"),
+            OpenStruct.new(attributes_for(:activity, kind: "other", from: DateTime.parse("2019-04-04 2:30pm"),
                                                                     to: DateTime.parse("2019-04-04 3:00pm"), total_hours: 0.50))
           ]
 
@@ -172,25 +172,25 @@ module Processors
 
         it "should calculate to have 7 regular hours and 0 overtime hours when they worked exactly scheduled hours" do
           activities = [
-            OpenStruct.new(attributes_for(:activity, type: "shift_prep", from: DateTime.parse("2019-04-04 7:00am"),
+            OpenStruct.new(attributes_for(:activity, kind: "shift_prep", from: DateTime.parse("2019-04-04 7:00am"),
                                                                     to: DateTime.parse("2019-04-04 7:30am"), total_hours: 0.50)),
-            OpenStruct.new(attributes_for(:activity, type: "job", from: DateTime.parse("2019-04-04 7:30am"),
+            OpenStruct.new(attributes_for(:activity, kind: "job", from: DateTime.parse("2019-04-04 7:30am"),
                                                                     to: DateTime.parse("2019-04-04 8:00am"), total_hours: 0.50)),
-            OpenStruct.new(attributes_for(:activity, type: "downtime", from: DateTime.parse("2019-04-04 8:00am"),
+            OpenStruct.new(attributes_for(:activity, kind: "downtime", from: DateTime.parse("2019-04-04 8:00am"),
                                                                     to: DateTime.parse("2019-04-04 8:30am"), total_hours: 0.50)),
-            OpenStruct.new(attributes_for(:activity, type: "job", from: DateTime.parse("2019-04-04 8:30am"),
+            OpenStruct.new(attributes_for(:activity, kind: "job", from: DateTime.parse("2019-04-04 8:30am"),
                                                                     to: DateTime.parse("2019-04-04 9:15am"), total_hours: 0.75)),
-            OpenStruct.new(attributes_for(:activity, type: "job", from: DateTime.parse("2019-04-04 9:15am"),
+            OpenStruct.new(attributes_for(:activity, kind: "job", from: DateTime.parse("2019-04-04 9:15am"),
                                                                     to: DateTime.parse("2019-04-04 10:00am"), total_hours: 0.75)),
-            OpenStruct.new(attributes_for(:activity, type: "lunch", from: DateTime.parse("2019-04-04 10:00am"),
+            OpenStruct.new(attributes_for(:activity, kind: "lunch", from: DateTime.parse("2019-04-04 10:00am"),
                                                                     to: DateTime.parse("2019-04-04 11:00am"), total_hours: 1.0)),
-            OpenStruct.new(attributes_for(:activity, type: "training", from: DateTime.parse("2019-04-04 11:00am"),
+            OpenStruct.new(attributes_for(:activity, kind: "training", from: DateTime.parse("2019-04-04 11:00am"),
                                                                     to: DateTime.parse("2019-04-04 12:00pm"), total_hours: 1.0)),
-            OpenStruct.new(attributes_for(:activity, type: "job", from: DateTime.parse("2019-04-04 12:00pm"),
+            OpenStruct.new(attributes_for(:activity, kind: "job", from: DateTime.parse("2019-04-04 12:00pm"),
                                                                     to: DateTime.parse("2019-04-04 1:45pm"), total_hours: 1.75)),
-            OpenStruct.new(attributes_for(:activity, type: "job", from: DateTime.parse("2019-04-04 1:45pm"),
+            OpenStruct.new(attributes_for(:activity, kind: "job", from: DateTime.parse("2019-04-04 1:45pm"),
                                                                     to: DateTime.parse("2019-04-04 2:30pm"), total_hours: 0.75)),
-            OpenStruct.new(attributes_for(:activity, type: "other", from: DateTime.parse("2019-04-04 2:30pm"),
+            OpenStruct.new(attributes_for(:activity, kind: "other", from: DateTime.parse("2019-04-04 2:30pm"),
                                                                     to: DateTime.parse("2019-04-04 3:00pm"), total_hours: 0.50))
           ]
 
