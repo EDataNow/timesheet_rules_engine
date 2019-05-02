@@ -1,7 +1,7 @@
 Gem::Specification.new do |s|
   s.name        = 'timesheet_rules_engine'
-  s.version     = '0.0.0'
-  s.date        = '2010-04-28'
+  s.version     = '0.0.1'
+  s.date        = '2019-04-28'
   s.summary     = "Timesheet Rules Engine"
   s.description = "Timesheet Rules Engine"
   s.authors     = ["Shawn Lee-Kwong"]
