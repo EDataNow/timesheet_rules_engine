@@ -33,7 +33,11 @@ class TimesheetRulesEngine
       timesheet
     end
 
-    Processors::Timesheets.new(@result_timesheets, @options.merge({ left_early: @left_early,
-                                                                     current_weekly_hours: @current_weekly_hours })).process_timesheets
+    @result = Processors::Timesheets.new(@result_timesheets, @options.merge({ left_early: @left_early,
+                                                                              current_weekly_hours: @current_weekly_hours })).process_timesheets
+
+    @result[:processed_timesheets] = @result_timesheets
+
+    @result
   end
 end

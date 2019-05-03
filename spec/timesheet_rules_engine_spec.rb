@@ -29,6 +29,8 @@ describe TimesheetRulesEngine do
 
         expect(result.regular).to eq(7.0)
         expect(result.overtime).to eq(0.0)
+
+        puts result.inspect
       end
     end
   end

@@ -68,7 +68,7 @@ module Processors
     end
 
     def process_timesheet
-      process_activities
+      processed_activities = process_activities
 
       base = Rules::Base.new(nil, @options[:criteria], { current_weekly_hours: @current_weekly_hours,
                                                           current_daily_hours: @result_timesheet.total,
@@ -82,6 +82,8 @@ module Processors
 
         break if base.stop
       end
+
+      @result_timesheet[:processed_activities] = processed_activities
 
       @result_timesheet
     end
