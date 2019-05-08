@@ -1,9 +1,27 @@
 require 'processors/timesheet'
 require 'processors/timesheets'
 require 'util/time_adjuster'
-require 'require_all'
 
-Dir["rules/**/*.rb"].each {|f| require f.gsub("lib/", "") }
+require "rules/base"
+require "rules/ca/on/minimum_weekly_hours"
+require "rules/ca/on/is_holiday"
+require "rules/ca/on/minimum_daily_hours"
+require "rules/ca/on/maximum_weekly_hours"
+require "rules/ca/on/is_partial_overtime_day"
+require "rules/ca/on/maximum_daily_hours"
+require "rules/is_overtime_activity_type"
+require "rules/is_lunch"
+require "rules/is_overtime_paid"
+require "rules/incentive/left_early_but_under_minimum_weekly"
+require "rules/incentive/qualifies_for_daily_overtime_after_leaving_early"
+require "rules/incentive/qualifies_for_minimum_after_leaving_early"
+require "rules/incentive/qualifies_for_weekly_overtime_after_leaving_early"
+require "rules/is_outside_regular_schedule"
+require "rules/is_billed"
+require "rules/is_paid"
+require "rules/is_downtime"
+require "rules/is_overtime_day"
+
 
 class TimesheetRulesEngine
   DEFAULTS = { include_rules: [], exclude_rules: [], no_rules: false,
