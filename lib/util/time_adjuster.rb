@@ -29,7 +29,7 @@ module Util
 
     def hours_difference
       new_dates = process_dates
-      ((new_dates.from.to_i - new_dates.to.to_i) / 3600.0).round(decimal_place.to_f)
+      ((new_dates.to.to_i - new_dates.from.to_i) / 3600.0).round(decimal_place.to_f)
     end
 
     def method_missing(method, *args)
