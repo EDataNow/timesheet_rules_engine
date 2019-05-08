@@ -70,7 +70,7 @@ module Processors
     def process_timesheet
       processed_activities = process_activities
 
-      base = Rules::Base.new(nil, @options[:criteria], { current_weekly_hours: @current_weekly_hours,
+      base = ::Rules::Base.new(nil, @options[:criteria], { current_weekly_hours: @current_weekly_hours,
                                                           current_daily_hours: @result_timesheet.total,
                                                           left_early: @left_early,
                                                           country: @options[:country],
@@ -90,7 +90,7 @@ module Processors
 
     def process_activities
       @timesheet.activities.map do |activity|
-        base_rule = Rules::Base.new(activity, @options[:criteria], { current_weekly_hours: @current_weekly_hours,
+        base_rule = ::Rules::Base.new(activity, @options[:criteria], { current_weekly_hours: @current_weekly_hours,
                                                                      current_daily_hours: @result_timesheet.total,
                                                                      left_early: @left_early,
                                                                      country: @options[:country],
@@ -121,7 +121,7 @@ module Processors
 
     def regional_activity_rules
       begin
-        Object.const_get("Rules::#{@options[:country].camelcase}::#{@options[:region].camelcase}").constants.map do |clazz|
+        Object.const_get("::Rules::#{@options[:country].camelcase}::#{@options[:region].camelcase}").constants.map do |clazz|
           "#{@options[:country].camelcase}::#{@options[:region].camelcase}::#{clazz.to_s}"
         end
       rescue
@@ -132,7 +132,7 @@ module Processors
 
     def get_clazz(rule)
       begin
-        Object.const_get("Rules::#{rule}")
+        Object.const_get("::Rules::#{rule}")
       rescue
         nil
       end

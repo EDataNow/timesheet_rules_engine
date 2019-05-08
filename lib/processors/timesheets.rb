@@ -73,7 +73,7 @@ module Processors
         end
       end
 
-      base = Rules::Base.new(nil, @options[:criteria], { current_weekly_hours: @current_weekly_hours,
+      base = ::Rules::Base.new(nil, @options[:criteria], { current_weekly_hours: @current_weekly_hours,
                                                           left_early: @left_early,
                                                           country: @options[:country],
                                                           region: @options[:region],
@@ -92,7 +92,7 @@ module Processors
 
     def get_clazz(rule)
       begin
-        Object.const_get("Rules::#{rule}")
+        Object.const_get("::Rules::#{rule}")
       rescue
         nil
       end

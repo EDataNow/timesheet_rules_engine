@@ -39,7 +39,7 @@ module Processors
       #   if is_overtime_day? || is_holiday?
       #     @base.processed_activity[:overtime] = @base.activity.total_hours
       #   elsif is_partial_overtime_day?
-      #     @base.processed_activity[:overtime] = Rules::IsPartialOvertimeDay.new(@base).calculate_overtime
+      #     @base.processed_activity[:overtime] = ::Rules::IsPartialOvertimeDay.new(@base).calculate_overtime
       #     @base.processed_activity[:regular] = @base.activity.total_hours - @base.processed_activity[:overtime]
       #   else
       #     @base.processed_activity[:regular] = @base.activity.total_hours
@@ -53,7 +53,7 @@ module Processors
 
     def get_clazz(rule)
       begin
-        Object.const_get("Rules::#{rule}")
+        Object.const_get("::Rules::#{rule}")
       rescue
         nil
       end

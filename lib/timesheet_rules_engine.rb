@@ -1,6 +1,7 @@
 require 'processors/timesheet'
 require 'processors/timesheets'
 require 'util/time_adjuster'
+Dir["rules/**/*.rb"].each {|f| require f }
 
 class TimesheetRulesEngine
   DEFAULTS = { include_rules: [], exclude_rules: [], no_rules: false,
