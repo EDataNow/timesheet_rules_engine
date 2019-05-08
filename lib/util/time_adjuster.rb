@@ -1,7 +1,6 @@
 require 'ostruct'
 require 'date'
 require 'active_support/all'
-require 'byebug'
 
 module Util
   class TimeAdjuster

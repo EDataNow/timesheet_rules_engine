@@ -1,7 +1,6 @@
 # Dir["lib/rules/**/**/*.rb"].each {|f| require f.gsub("lib/", "") }
 require 'processors/activity'
 require 'ostruct'
-require 'byebug'
 
 module Processors
   class Timesheet

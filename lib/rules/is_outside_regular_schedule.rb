@@ -1,6 +1,5 @@
 require 'rules/base'
 require 'util/time_adjuster'
-require 'byebug'
 
 module Rules
   class IsOutsideRegularSchedule < Base

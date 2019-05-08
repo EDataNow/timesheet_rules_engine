@@ -1,5 +1,4 @@
 require 'ostruct'
-require 'byebug'
 
 module Rules
   class Base

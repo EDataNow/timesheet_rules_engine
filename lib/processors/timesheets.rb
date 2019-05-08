@@ -1,5 +1,4 @@
 # Dir["lib/rules/**/*.rb"].each {|f| require f.gsub("lib/", "") }
-require 'byebug'
 require 'active_support/all'
 require 'ostruct'
 
