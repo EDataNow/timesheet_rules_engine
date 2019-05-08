@@ -2,7 +2,9 @@ require 'processors/timesheet'
 require 'processors/timesheets'
 require 'util/time_adjuster'
 require 'rules/base'
-Dir["rules/**/*.rb"].each {|f| puts f; require f }
+require 'require_all'
+
+require_all 'lib'
 
 class TimesheetRulesEngine
   DEFAULTS = { include_rules: [], exclude_rules: [], no_rules: false,

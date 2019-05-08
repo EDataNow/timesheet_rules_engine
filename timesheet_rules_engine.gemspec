@@ -13,4 +13,5 @@ Gem::Specification.new do |s|
   s.test_files = Dir["spec/**/*"]
   s.add_dependency "holidays"
   s.add_dependency "activesupport"
+  s.add_dependency "require_all"
 end

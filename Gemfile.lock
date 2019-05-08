@@ -16,6 +16,7 @@ GEM
     i18n (1.6.0)
       concurrent-ruby (~> 1.0)
     minitest (5.11.3)
+    require_all (2.0.0)
     rspec (3.8.0)
       rspec-core (~> 3.8.0)
       rspec-expectations (~> 3.8.0)
@@ -42,6 +43,7 @@ DEPENDENCIES
   csv
   factory_bot
   holidays
+  require_all
   rspec
 
 BUNDLED WITH
