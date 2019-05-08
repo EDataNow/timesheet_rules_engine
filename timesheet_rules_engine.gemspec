@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name        = 'timesheet_rules_engine'
-  s.version     = '0.0.2'
+  s.version     = '0.0.3'
   s.date        = '2019-04-28'
   s.summary     = "Timesheet Rules Engine"
   s.description = "Timesheet Rules Engine"
