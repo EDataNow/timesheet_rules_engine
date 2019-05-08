@@ -8,7 +8,7 @@ module Util
     DEFAULTS = {
                   billable_hour: 0.25,
                   closest_minute: 8.0,
-                  decimal_place: 2
+                  decimal_place: 2.0
                }
 
     def initialize(from, to, options={})
@@ -29,7 +29,7 @@ module Util
 
     def hours_difference
       new_dates = process_dates
-      ((new_dates.new_to.to_i - new_dates.new_from.to_i) / 3600.0).round(decimal_place)
+      ((new_dates.from.to_i - new_dates.to.to_i) / 3600.0).round(decimal_place.to_f)
     end
 
     def method_missing(method, *args)
