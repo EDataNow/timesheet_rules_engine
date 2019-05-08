@@ -1,7 +1,6 @@
 require 'processors/timesheet'
 require 'processors/timesheets'
 require 'util/time_adjuster'
-require 'rules/base'
 require 'require_all'
 
 require_all 'lib'
