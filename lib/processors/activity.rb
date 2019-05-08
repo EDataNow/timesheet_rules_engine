@@ -1,10 +1,6 @@
 require 'byebug'
 require 'active_support/all'
 # Dir["lib/rules/**/*.rb"].each {|f| require f.gsub("lib/", "") }
-require 'require_all'
-
-require_all 'lib'
-
 require 'ostruct'
 
 module Processors
