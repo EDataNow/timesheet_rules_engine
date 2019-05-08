@@ -14,4 +14,5 @@ Gem::Specification.new do |s|
   s.add_dependency "holidays"
   s.add_dependency "activesupport"
   s.add_dependency "require_all"
+  s.add_dependency "byebug"
 end
