@@ -39,7 +39,9 @@ module Rules
         @processed_activity[:payable] = 0.0
         @processed_activity[:billable] = @activity.total_hours
         @processed_activity[:regular] = 0.0
+        @processed_activity[:raw_regular] = 0.0
         @processed_activity[:overtime] = 0.0
+        @processed_activity[:raw_overtime] = 0.0
         @processed_activity[:lunch] = @activity.total_hours
 
         @base.stop = true

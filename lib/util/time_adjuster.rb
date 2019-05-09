@@ -26,6 +26,10 @@ module Util
       OpenStruct.new({from: new_from, to: new_to})
     end
 
+    def raw_seconds_difference
+      (@to.to_i - @from.to_i).round(decimal_place.to_f)
+    end
+
     def hours_difference
       new_dates = process_dates
       ((new_dates.to.to_i - new_dates.from.to_i) / 3600.0).round(decimal_place.to_f)

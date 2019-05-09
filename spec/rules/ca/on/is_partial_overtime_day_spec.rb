@@ -260,6 +260,8 @@ module Rules
                   expect(subject.regular).to eq(3.0)
                   expect(subject.overtime).to eq(1.0)
                   expect(subject.total).to eq(4.0)
+                  expect(subject.raw_regular).to eq(10800.0)
+                  expect(subject.raw_overtime).to eq(3600.0)
                 end
 
                 it "should be overtime" do

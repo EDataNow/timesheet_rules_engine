@@ -36,6 +36,7 @@ module Rules
     def process_activity
       if check
         @processed_activity[:downtime] = @activity.total_hours
+        @processed_activity[:raw_downtime] = @activity.total_hours * 3600.0
       end
 
       @processed_activity

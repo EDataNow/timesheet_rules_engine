@@ -36,7 +36,9 @@ module Rules
       def process_activity
         if check
           @processed_activity.regular += @processed_activity.overtime
+          @processed_activity.raw_regular = @processed_activity.regular * 3600.0
           @processed_activity.overtime = 0.0
+          @processed_activity.raw_overtime = 0.0
 
           @base.stop = true
         end

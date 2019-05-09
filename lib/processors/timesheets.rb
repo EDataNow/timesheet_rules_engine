@@ -39,8 +39,8 @@ module Processors
 
     def initialize(processed_timesheets, options)
       @options = DEFAULTS.merge(options.symbolize_keys)
-      @result_timesheets = OpenStruct.new({billable: 0.0, downtime: 0.0, lunch: 0.0,
-                                        regular: 0.0, minimum_regular: 0.0, payable: 0.0, overtime: 0.0, total: 0.0})
+      @result_timesheets = OpenStruct.new({billable: 0.0, raw_downtime: 0.0, downtime: 0.0, lunch: 0.0, raw_regular: 0.0,
+                                        regular: 0.0, minimum_regular: 0.0, payable: 0.0, raw_overtime: 0.0, overtime: 0.0, total: 0.0})
 
       @current_weekly_hours = @options[:current_weekly_hours]
       @left_early = @options[:left_early]
@@ -62,13 +62,14 @@ module Processors
 
     def process_timesheets
       @processed_timesheets.each do |processed_timesheet|
-        [:billable, :regular, :payable, :overtime, :minimum_regular, :downtime, :lunch, :total].each do |attribute|
+        [:billable, :raw_regular, :regular, :payable, :raw_overtime, :overtime, :minimum_regular, :raw_downtime, :downtime, :lunch, :total].each do |attribute|
           @result_timesheets[attribute] += processed_timesheet[attribute]
         end
 
         if processed_timesheet[:minimum_regular] > 0
           @result_timesheets[:regular] += processed_timesheet[:minimum_regular]
           @result_timesheets[:regular] -= processed_timesheet[:regular]
+          @result_timesheets[:raw_regular] = @result_timesheets[:regular] * 3600.0
         end
       end
 

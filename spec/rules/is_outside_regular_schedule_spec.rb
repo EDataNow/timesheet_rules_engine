@@ -36,6 +36,8 @@ module Rules
 
             expect(subject.regular).to eq(10.5)
             expect(subject.overtime).to eq(1.0)
+            expect(subject.raw_regular).to eq(38088.0)
+            expect(subject.raw_overtime).to eq(3420.0)
           end
         end
 

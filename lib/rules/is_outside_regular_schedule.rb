@@ -41,6 +41,31 @@ module Rules
       !@partial_overtime_time_field.nil?
     end
 
+    def calculate_seconds
+      @from = @activity.from
+      @to = @activity.to
+
+      assign_partial_field
+
+      started_at = scheduled_shift.started_at
+      ended_at = scheduled_shift.ended_at
+      hours = OpenStruct.new({regular: 0.0, overtime: 0.0})
+
+      if @partial_overtime_time_field == "both_started_at"
+        hours[:overtime] = @activity.total_hours
+      elsif @partial_overtime_time_field == "from_started_at"
+        hours[:regular] = ((@to.to_i - started_at.to_i) / 3600.0).round(decimal_place)
+        hours[:overtime] = ((started_at.to_i - @from.to_i) / 3600.0).round(decimal_place)
+      elsif @partial_overtime_time_field == "both_ended_at"
+        hours[:overtime] = @activity.total_hours
+      elsif @partial_overtime_time_field == "to_ended_at"
+        hours[:regular] = ((ended_at.to_i - @from.to_i) / 3600.0).round(decimal_place)
+        hours[:overtime] = ((@to.to_i - ended_at.to_i) / 3600.0).round(decimal_place)
+      end
+
+      hours
+    end
+
     def calculate_hours
       started_at = scheduled_shift.started_at
       ended_at = scheduled_shift.ended_at
@@ -66,6 +91,11 @@ module Rules
         hours = calculate_hours
         @processed_activity[:regular] = hours.regular
         @processed_activity[:overtime] = hours.overtime
+
+        seconds = calculate_seconds
+
+        @processed_activity[:raw_regular] = seconds.regular * 3600.0
+        @processed_activity[:raw_overtime] = seconds.overtime * 3600.0
       end
 
       @processed_activity

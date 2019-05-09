@@ -44,7 +44,9 @@ module Rules
         def process_activity
           if check && @processed_activity[:overtime] == 0.0
             @processed_activity[:regular] = 0.0
+            @processed_activity[:raw_regular] = 0.0
             @processed_activity[:overtime] = @activity.total_hours
+            @processed_activity[:raw_overtime] = @activity.total_hours * 3600.0
           end
 
           @processed_activity

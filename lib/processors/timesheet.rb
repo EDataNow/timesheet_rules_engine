@@ -45,8 +45,8 @@ module Processors
     attr_accessor :current_weekly_hours, :current_daily_hours
 
     def initialize(timesheet, options={})
-      @result_timesheet = OpenStruct.new({id: timesheet.id, billable: 0.0, downtime: 0.0, lunch: 0.0,
-                                        regular: 0.0, minimum_regular: 0.0, payable: 0.0, overtime: 0.0, total: 0.0})
+      @result_timesheet = OpenStruct.new({id: timesheet.id, billable: 0.0, raw_downtime: 0.0, downtime: 0.0, lunch: 0.0, raw_regular: 0.0,
+                                        regular: 0.0, minimum_regular: 0.0, payable: 0.0, raw_overtime: 0.0, overtime: 0.0, total: 0.0})
       @timesheet = timesheet
       @options = DEFAULTS.merge(options.symbolize_keys)
       @current_weekly_hours = @options[:current_weekly_hours]
@@ -108,7 +108,7 @@ module Processors
           Activity.new(base_rule, activity_rules).calculate_hours
         end
 
-        [:billable, :regular, :payable, :overtime, :downtime, :lunch, :total].each do |attribute|
+        [:billable, :raw_regular, :regular, :payable, :raw_overtime, :overtime, :raw_downtime, :downtime, :lunch, :total].each do |attribute|
           @result_timesheet[attribute] += base_rule.processed_activity[attribute]
         end
 

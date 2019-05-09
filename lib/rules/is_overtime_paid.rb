@@ -37,7 +37,9 @@ module Rules
     def process_activity
       unless check
         @processed_activity[:overtime] = 0.0
+        @processed_activity[:raw_overtime] = 0.0
         @processed_activity[:regular] = @activity.total_hours
+        @processed_activity[:raw_regular] = @activity.total_hours * 3600.0
 
         @base.stop = true
       end

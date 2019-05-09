@@ -57,9 +57,31 @@ module Rules
 
             @processed_activity[:regular] = @activity.total_hours - time_difference
             @processed_activity[:overtime] = time_difference
+
+            time_difference = calculate_raw_overtime
+
+            @processed_activity[:raw_regular] = (@activity.total_hours - time_difference) * 3600.0
+            @processed_activity[:raw_overtime] = time_difference * 3600.0
           end
 
           @processed_activity
+        end
+
+        def calculate_raw_overtime
+          @from = @activity.from
+          @to = @activity.to
+
+          is_partial_overtime_day
+
+          if @partial_overtime_time_field == "from"
+            time_difference = ((@to.midnight.to_i - @from.to_i) / 3600.0).round(decimal_place)
+          elsif @partial_overtime_time_field == "to"
+            time_difference = ((@to.to_i - @to.midnight.to_i) / 3600.0).round(decimal_place)
+          elsif @partial_overtime_time_field == "both"
+            time_difference = @activity.total_hours
+          end
+
+          time_difference
         end
 
         def calculate_overtime
