@@ -30,6 +30,7 @@ module Processors
           @base.processed_activity[:overtime] == 0.0 &&
           @base.processed_activity[:lunch] == 0.0
         @base.processed_activity[:regular] = @base.activity.total_hours
+        @base.processed_activity[:raw_regular] = @base.activity.total_hours * 3600.0
       end
 
       # if is_lunch?
