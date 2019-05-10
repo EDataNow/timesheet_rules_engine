@@ -9,8 +9,9 @@ module Processors
                                'IsLunch',
                                'IsOvertimePaid',
                                'IsOvertimeActivityType',
-                              #  "Ca::On::IsPartialOvertimeDay",
-                              #  'Ca::On::IsHoliday'
+                               "Ca::On::IsPartialOvertimeDay",
+                               'Ca::On::IsHoliday',
+                               'IsOutsideRegularSchedule'
                              ]
 
     DEFAULT_TIMESHEET_RULES =  [
