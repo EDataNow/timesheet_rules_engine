@@ -87,7 +87,7 @@ module Rules
     end
 
     def process_activity
-      if check
+      if check && @processed_activity[:overtime] == 0.0
         hours = calculate_hours
         @processed_activity[:regular] = hours.regular
         @processed_activity[:overtime] = hours.overtime
