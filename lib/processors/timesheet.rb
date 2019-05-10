@@ -41,7 +41,7 @@ module Processors
                   country: "ca", region: "on"
                 }
 
-    attr_reader :timesheet, :rules
+    attr_reader :timesheet, :rules, :result_timesheet
 
     attr_accessor :current_weekly_hours, :current_daily_hours
 
