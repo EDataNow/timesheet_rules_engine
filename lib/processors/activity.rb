@@ -32,21 +32,6 @@ module Processors
         @base.processed_activity[:regular] = @base.activity.total_hours
         @base.processed_activity[:raw_regular] = @base.activity.total_hours * 3600.0
       end
-
-      # if is_lunch?
-      #   @base.processed_activity[:lunch] = @base.activity.total_hours
-      # elsif is_overtime_paid? && is_overtime_activity_type?
-      #   if is_overtime_day? || is_holiday?
-      #     @base.processed_activity[:overtime] = @base.activity.total_hours
-      #   elsif is_partial_overtime_day?
-      #     @base.processed_activity[:overtime] = ::Rules::IsPartialOvertimeDay.new(@base).calculate_overtime
-      #     @base.processed_activity[:regular] = @base.activity.total_hours - @base.processed_activity[:overtime]
-      #   else
-      #     @base.processed_activity[:regular] = @base.activity.total_hours
-      #   end
-      # else
-      #   @base.processed_activity[:regular] = @base.activity.total_hours
-      # end
     end
 
     private
