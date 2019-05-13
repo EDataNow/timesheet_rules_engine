@@ -19,7 +19,9 @@ module Rules
         def process_activity
           if check && @processed_activity[:overtime] == 0.0
             @processed_activity[:regular] = @base.maximum_daily_hours - @base.current_daily_hours
+            @processed_activity[:raw_regular] = @processed_activity[:regular] * 3600.0
             @processed_activity[:overtime] = @activity.total_hours - @processed_activity[:regular]
+            @processed_activity[:raw_overtime] = @processed_activity[:overtime] * 3600.0
 
             @base.stop = true
           end
