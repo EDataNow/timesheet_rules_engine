@@ -15,7 +15,9 @@ module Processors
                              ]
     attr_reader :base, :rules
 
-    def initialize(base, rules=[])
+    def initialize(base, rules=[], time_zone="UTC")
+      Time.zone = time_zone
+
       @base = base
       @rules = rules.empty? ? DEFAULT_ACTIVITY_RULES : rules
     end
