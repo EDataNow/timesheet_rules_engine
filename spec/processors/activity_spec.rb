@@ -226,6 +226,19 @@ module Processors
             expect(base.processed_activity.regular).to eq(1.0)
             expect(base.processed_activity.overtime).to eq(2.0)
           end
+
+          it "should calculate correct overtime hours on a regular day when current daily hours is greater than daily maximum" do
+            context = {current_weekly_hours: 40.0, current_daily_hours: 9.0, country: "ca", region: "on"}
+
+            base = Rules::Base.new(OpenStruct.new(attributes_for(:activity, total_hours: 3.0, from: DateTime.parse("2019-04-04 5:00pm"),
+                                                          to: DateTime.parse("2019-04-04 7:00pm"))),
+                                                          criteria, context)
+
+            Activity.new(base).calculate_hours
+
+            expect(base.processed_activity.regular).to eq(0.0)
+            expect(base.processed_activity.overtime).to eq(3.0)
+          end
         end
       end
     end
