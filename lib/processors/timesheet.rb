@@ -11,7 +11,8 @@ module Processors
                                'IsOvertimeActivityType',
                                "Ca::On::IsPartialOvertimeDay",
                                'Ca::On::IsHoliday',
-                               'IsOutsideRegularSchedule'
+                               'Ca::On::MaximumDailyHours',
+                              #  'IsOutsideRegularSchedule'
                              ]
 
     DEFAULT_TIMESHEET_RULES =  [
