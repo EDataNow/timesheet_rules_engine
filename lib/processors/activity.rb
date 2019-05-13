@@ -11,7 +11,7 @@ module Processors
                                'IsOvertimeActivityType',
                                "Ca::On::IsPartialOvertimeDay",
                                'Ca::On::IsHoliday',
-                               'IsOutsideRegularSchedule'
+                              #  'IsOutsideRegularSchedule'
                              ]
     attr_reader :base, :rules
 

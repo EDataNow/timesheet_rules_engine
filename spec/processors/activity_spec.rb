@@ -133,19 +133,19 @@ module Processors
 
                 Activity.new(base).calculate_hours
 
-                expect(base.processed_activity.regular).to eq(0.0)
-                expect(base.processed_activity.overtime).to eq(1.0)
+                expect(base.processed_activity.regular).to eq(1.0)
+                expect(base.processed_activity.overtime).to eq(0.0)
               end
 
               it "should have one hour in regular and one hour in overtime when it has started outside regular but ended in regular" do
-                base = Rules::Base.new(OpenStruct.new(attributes_for(:activity, total_hours: 1.0, from: DateTime.parse("2018-01-03 5:01am"),
+                base = Rules::Base.new(OpenStruct.new(attributes_for(:activity, total_hours: 2.0, from: DateTime.parse("2018-01-03 5:01am"),
                                                               to: DateTime.parse("2018-01-03 7:05am"))),
                                                               criteria)
 
                 Activity.new(base).calculate_hours
 
-                expect(base.processed_activity.regular).to eq(1.0)
-                expect(base.processed_activity.overtime).to eq(1.0)
+                expect(base.processed_activity.regular).to eq(2.0)
+                expect(base.processed_activity.overtime).to eq(0.0)
               end
             end
           end
