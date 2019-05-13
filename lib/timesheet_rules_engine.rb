@@ -30,7 +30,9 @@ class TimesheetRulesEngine
 
   attr_reader :current_weekly_hours, :left_early
 
-  def initialize(timesheets=[], options={})
+  def initialize(timesheets=[], options={}, time_zone="UTC")
+    Time.zone = time_zone
+
     @timesheets = timesheets
     @options = DEFAULTS.merge(options.symbolize_keys)
     @region = "#{@options[:country]} #{@options[:region]}"
