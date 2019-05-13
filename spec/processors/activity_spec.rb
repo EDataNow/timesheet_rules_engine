@@ -201,31 +201,31 @@ module Processors
             expect(base.processed_activity.overtime).to eq(5.0)
           end
 
-          # it "should calculate correct overtime hours on a regular day when current daily hours is the same as daily maximum" do
-          #   context = {current_weekly_hours: 40.0, current_daily_hours: 8.0}
+          it "should calculate correct overtime hours on a regular day when current daily hours is the same as daily maximum" do
+            context = {current_weekly_hours: 40.0, current_daily_hours: 8.0, country: "ca", region: "on"}
 
-          #   base = Rules::Base.new(OpenStruct.new(attributes_for(:activity, total_hours: 2.0, from: DateTime.parse("2019-04-04 5:00pm"),
-          #                                                 to: DateTime.parse("2019-04-04 7:00pm"))),
-          #                                                 criteria, context)
+            base = Rules::Base.new(OpenStruct.new(attributes_for(:activity, total_hours: 2.0, from: DateTime.parse("2019-04-04 5:00pm"),
+                                                          to: DateTime.parse("2019-04-04 7:00pm"))),
+                                                          criteria, context)
 
-          #   Activity.new(base).calculate_hours
+            Activity.new(base).calculate_hours
 
-          #   expect(base.processed_activity.regular).to eq(0.0)
-          #   expect(base.processed_activity.overtime).to eq(2.0)
-          # end
+            expect(base.processed_activity.regular).to eq(0.0)
+            expect(base.processed_activity.overtime).to eq(2.0)
+          end
 
-          # it "should calculate correct overtime hours on a regular day when current daily hours is less than daily maximum but will go over with this activity" do
-          #   context = {current_weekly_hours: 40.0, current_daily_hours: 7.0}
+          it "should calculate correct overtime hours on a regular day when current daily hours is less than daily maximum but will go over with this activity" do
+            context = {current_weekly_hours: 40.0, current_daily_hours: 7.0, country: "ca", region: "on"}
 
-          #   base = Rules::Base.new(OpenStruct.new(attributes_for(:activity, total_hours: 3.0, from: DateTime.parse("2019-04-04 5:00pm"),
-          #                                                 to: DateTime.parse("2019-04-04 7:00pm"))),
-          #                                                 criteria, context)
+            base = Rules::Base.new(OpenStruct.new(attributes_for(:activity, total_hours: 3.0, from: DateTime.parse("2019-04-04 5:00pm"),
+                                                          to: DateTime.parse("2019-04-04 7:00pm"))),
+                                                          criteria, context)
 
-          #   Activity.new(base).calculate_hours
+            Activity.new(base).calculate_hours
 
-          #   expect(base.processed_activity.regular).to eq(1.0)
-          #   expect(base.processed_activity.overtime).to eq(2.0)
-          # end
+            expect(base.processed_activity.regular).to eq(1.0)
+            expect(base.processed_activity.overtime).to eq(2.0)
+          end
         end
       end
     end

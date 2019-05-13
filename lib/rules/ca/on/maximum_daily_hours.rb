@@ -18,14 +18,15 @@ module Rules
 
         def process_activity
           if check && @processed_activity[:overtime] == 0.0
-            @processed_activity[:overtime] = @activity.total_hours
+            @processed_activity[:regular] = @base.maximum_daily_hours - @base.current_daily_hours
+            @processed_activity[:overtime] = @activity.total_hours - @processed_activity[:regular]
 
             @base.stop = true
           end
         end
 
         def check
-          @base.current_daily_hours > @base.maximum_daily_hours
+          (@base.current_daily_hours + @activity.total_hours) > @base.maximum_daily_hours
         end
 
         def self.check(current_daily_hours, maximum_daily_hours)
