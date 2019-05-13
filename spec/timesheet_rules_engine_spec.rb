@@ -293,7 +293,7 @@ describe TimesheetRulesEngine do
                                         shift: OpenStruct.new(started_at: DateTime.parse("2019-04-08 7:00am"),
                                                               ended_at: DateTime.parse("2019-04-08 3:00pm")))),
           OpenStruct.new(attributes_for(:timesheet_with_activities, activities: tuesday,
-                                        shift: OpenStruct.new(started_at: DateTime.parse("2019-04-09 5:00am"),
+                                        shift: OpenStruct.new(started_at: DateTime.parse("2019-04-09 7:00am"),
                                                               ended_at: DateTime.parse("2019-04-09 3:00pm")))),
           OpenStruct.new(attributes_for(:timesheet_with_activities, activities: wednesday,
                                         shift: OpenStruct.new(started_at: DateTime.parse("2019-04-10 7:00am"),
@@ -310,8 +310,10 @@ describe TimesheetRulesEngine do
       it "should calculate correct regular and overtime hours" do
         result = TimesheetRulesEngine.new(timesheets).process_timesheets
 
-        expect(result.overtime).to eq(2.0)
-        expect(result.regular).to eq(32.0)
+        expect(result.overtime).to eq(3.0)
+        expect(result.regular).to eq(31.0)
+        expect(result.lunch).to eq(4.0)
+        expect(result.total).to eq(38.0)
       end
     end
 

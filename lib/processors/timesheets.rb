@@ -69,6 +69,8 @@ module Processors
         if processed_timesheet[:minimum_regular] > 0
           @result_timesheets[:regular] += processed_timesheet[:minimum_regular]
           @result_timesheets[:regular] -= processed_timesheet[:regular]
+          @result_timesheets[:total] -= processed_timesheet[:regular]
+          @result_timesheets[:total] += processed_timesheet[:minimum_regular]
           @result_timesheets[:raw_regular] = @result_timesheets[:regular] * 3600.0
         end
       end
