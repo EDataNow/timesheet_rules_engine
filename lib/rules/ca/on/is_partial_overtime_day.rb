@@ -3,6 +3,11 @@ require 'util/time_adjuster'
 require 'holidays'
 require 'holidays/core_extensions/date'
 require 'active_support/all'
+require 'holidays/core_extensions/time'
+
+class Time
+  include Holidays::CoreExtensions::Time
+end
 
 class DateTime
   include Holidays::CoreExtensions::Date
