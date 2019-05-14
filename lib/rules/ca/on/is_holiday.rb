@@ -72,7 +72,7 @@ module Rules
         private
 
         def is_holiday?(field_to_check=nil)
-          holidays_overtime && @activity.from.holiday?(@base.full_region) && @activity.to.holiday?(@base.full_region)
+          holidays_overtime && @activity.from.to_datetime.holiday?(@base.full_region) && @activity.to.to_datetime.holiday?(@base.full_region)
         end
       end
     end

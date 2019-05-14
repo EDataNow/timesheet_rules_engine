@@ -133,9 +133,9 @@ module Rules
         def is_holiday?(field_to_check=nil)
           if holidays_overtime
             if field_to_check
-              self.instance_variable_get("@#{field_to_check}").holiday?(@base.full_region)
+              self.instance_variable_get("@#{field_to_check}").to_datetime.holiday?(@base.full_region)
             else
-              @from.holiday?(@base.full_region) && @to.holiday?(@base.full_region)
+              @from.to_datetime.holiday?(@base.full_region) && @to.to_datetime.holiday?(@base.full_region)
             end
           else
             false
