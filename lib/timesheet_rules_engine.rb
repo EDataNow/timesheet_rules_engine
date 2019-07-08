@@ -50,7 +50,7 @@ class TimesheetRulesEngine
                                                           })
                                             ).process_timesheet
 
-      @current_weekly_hours += timesheet.total
+      @current_weekly_hours += timesheet.regular
 
       timesheet
     end

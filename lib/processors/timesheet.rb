@@ -72,7 +72,7 @@ module Processors
       processed_activities = process_activities
 
       base = ::Rules::Base.new(nil, @options[:criteria], { current_weekly_hours: @current_weekly_hours,
-                                                          current_daily_hours: @result_timesheet.total,
+                                                          current_daily_hours: @result_timesheet.regular,
                                                           left_early: @left_early,
                                                           country: @options[:country],
                                                           region: @options[:region],
