@@ -92,7 +92,7 @@ module Processors
     def process_activities
       @timesheet.activities.completed.map do |activity|
         base_rule = ::Rules::Base.new(activity, @options[:criteria], { current_weekly_hours: @current_weekly_hours,
-                                                                     current_daily_hours: @result_timesheet.total,
+                                                                     current_daily_hours: @result_timesheet.regular,
                                                                      left_early: @left_early,
                                                                      country: @options[:country],
                                                                      region: @options[:region] })
