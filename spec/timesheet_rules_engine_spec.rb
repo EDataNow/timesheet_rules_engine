@@ -25,6 +25,7 @@ describe TimesheetRulesEngine do
       }
 
       it "should calculate correct regular and overtime hours" do
+        allow(saturday).to receive(:completed) { saturday }
         result = TimesheetRulesEngine.new(timesheets, { include_rules: ["IsLunch"] }).process_timesheets
 
         expect(result.regular).to eq(7.0)
@@ -111,6 +112,12 @@ describe TimesheetRulesEngine do
       }
 
       it "should calculate correct regular and overtime hours" do
+        allow(monday).to receive(:completed) { monday }
+        allow(tuesday).to receive(:completed) { tuesday }
+        allow(wednesday).to receive(:completed) { wednesday }
+        allow(thursday).to receive(:completed) { thursday }
+        allow(friday).to receive(:completed) { friday }
+
         result = TimesheetRulesEngine.new(timesheets, { exclude_rules: ["IsLunch"] }).process_timesheets
 
         expect(result.regular).to eq(40.0)
@@ -126,9 +133,9 @@ describe TimesheetRulesEngine do
               maximum_daily_hours: 8.0,
               minimum_weekly_hours: 44.0,
               maximum_weekly_hours: 60.0,
-              overtime_days: ["saturday", "sunday"],
-              saturdays_overtime: true,
-              sundays_overtime: true,
+              overtime_days: [],
+              saturdays_overtime: false,
+              sundays_overtime: false,
               holidays_overtime: true,
               decimal_place: 2,
               billable_hour: 0.25,
@@ -228,6 +235,13 @@ describe TimesheetRulesEngine do
       }
 
       it "should calculate correct regular and overtime hours" do
+        allow(monday).to receive(:completed) { monday }
+        allow(tuesday).to receive(:completed) { tuesday }
+        allow(wednesday).to receive(:completed) { wednesday }
+        allow(thursday).to receive(:completed) { thursday }
+        allow(friday).to receive(:completed) { friday }
+        allow(saturday).to receive(:completed) { saturday }
+
         result = TimesheetRulesEngine.new(timesheets).process_timesheets
 
         expect(result.overtime).to eq(2.0)
@@ -308,10 +322,16 @@ describe TimesheetRulesEngine do
       }
 
       it "should calculate correct regular and overtime hours" do
+        allow(monday).to receive(:completed) { monday }
+        allow(tuesday).to receive(:completed) { tuesday }
+        allow(wednesday).to receive(:completed) { wednesday }
+        allow(thursday).to receive(:completed) { thursday }
+        allow(friday).to receive(:completed) { friday }
+
         result = TimesheetRulesEngine.new(timesheets).process_timesheets
 
-        expect(result.overtime).to eq(3.0)
-        expect(result.regular).to eq(31.0)
+        expect(result.overtime).to eq(2.0)
+        expect(result.regular).to eq(32.0)
         expect(result.lunch).to eq(4.0)
         expect(result.total).to eq(38.0)
       end
@@ -390,6 +410,12 @@ describe TimesheetRulesEngine do
       }
 
       it "should calculate correct regular and overtime hours" do
+        allow(monday).to receive(:completed) { monday }
+        allow(tuesday).to receive(:completed) { tuesday }
+        allow(wednesday).to receive(:completed) { wednesday }
+        allow(thursday).to receive(:completed) { thursday }
+        allow(friday).to receive(:completed) { friday }
+
         result = TimesheetRulesEngine.new(timesheets).process_timesheets
 
         expect(result.overtime).to eq(0.0)
@@ -502,6 +528,14 @@ describe TimesheetRulesEngine do
       }
 
       it "should calculate correct regular and overtime hours" do
+        allow(monday).to receive(:completed) { monday }
+        allow(tuesday).to receive(:completed) { tuesday }
+        allow(wednesday).to receive(:completed) { wednesday }
+        allow(thursday).to receive(:completed) { thursday }
+        allow(friday).to receive(:completed) { friday }
+        allow(saturday).to receive(:completed) { saturday }
+        allow(sunday).to receive(:completed) { sunday }
+
         result = TimesheetRulesEngine.new(timesheets).process_timesheets
 
         expect(result.regular).to eq(35.0)
@@ -586,6 +620,12 @@ describe TimesheetRulesEngine do
       }
 
       it "should calculate correct regular and overtime hours" do
+        allow(monday).to receive(:completed) { monday }
+        allow(tuesday).to receive(:completed) { tuesday }
+        allow(wednesday).to receive(:completed) { wednesday }
+        allow(thursday).to receive(:completed) { thursday }
+        allow(friday).to receive(:completed) { friday }
+
         result = TimesheetRulesEngine.new(timesheets).process_timesheets
 
         expect(result.regular).to eq(35.0)

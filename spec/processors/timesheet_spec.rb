@@ -22,6 +22,7 @@ module Processors
           }
       }
 
+
     describe 'rules and activities' do
       context 'worked on an overtime day and all paid' do
         let(:criteria) {
@@ -66,6 +67,8 @@ module Processors
                                                                     to: DateTime.parse("2019-04-06 3:00pm"), total_hours: 0.50))
           ]
 
+          allow(activities).to receive(:completed) { activities }
+
           result = Timesheet.new(OpenStruct.new(attributes_for(:timesheet_with_activities, activities: activities)), {criteria: criteria}).process_timesheet
 
           expect(result.regular).to eq(1.0)
@@ -83,6 +86,8 @@ module Processors
                                                                       to: DateTime.parse("2019-04-04 8:00am"), total_hours: 0.50))
             ]
 
+            allow(activities).to receive(:completed) { activities }
+
             result = Timesheet.new(OpenStruct.new(attributes_for(:timesheet_with_activities, activities: activities, left_early: false)), {criteria: criteria}).process_timesheet
 
             expect(result.regular).to eq(1.0)
@@ -99,6 +104,8 @@ module Processors
               OpenStruct.new(attributes_for(:activity, kind: "job", from: DateTime.parse("2019-04-04 7:30am"),
                                                                       to: DateTime.parse("2019-04-04 8:00am"), total_hours: 0.50))
             ]
+
+            allow(activities).to receive(:completed) { activities }
 
             result = Timesheet.new(OpenStruct.new(attributes_for(:timesheet_with_activities, activities: activities, left_early: true)), {criteria: criteria, left_early: true}).process_timesheet
 
@@ -132,12 +139,14 @@ module Processors
                                                                     to: DateTime.parse("2019-04-04 3:00pm"), total_hours: 0.50))
           ]
 
+          allow(activities).to receive(:completed) { activities }
+
           result = Timesheet.new(OpenStruct.new(attributes_for(:timesheet_with_activities, activities: activities)), {criteria: criteria}).process_timesheet
 
-          expect(result.regular).to eq(7.0)
+          expect(result.regular).to eq(8.0)
           expect(result.lunch).to eq(1.0)
           expect(result.total).to eq(9.0)
-          expect(result.overtime).to eq(1.0)
+          expect(result.overtime).to eq(0.0)
         end
 
         it "should calculate to have 7 regular hours and 2 overtime hour when they came in early but worked scheduled hours" do
@@ -164,10 +173,12 @@ module Processors
                                                                     to: DateTime.parse("2019-04-04 3:00pm"), total_hours: 0.50))
           ]
 
+          allow(activities).to receive(:completed) { activities }
+
           result = Timesheet.new(OpenStruct.new(attributes_for(:timesheet_with_activities, activities: activities)), {criteria: criteria}).process_timesheet
 
-          expect(result.regular).to eq(7.0)
-          expect(result.overtime).to eq(2.0)
+          expect(result.regular).to eq(8.0)
+          expect(result.overtime).to eq(1.0)
           expect(result.lunch).to eq(1.0)
           expect(result.total).to eq(10.0)
         end
@@ -196,6 +207,8 @@ module Processors
                                                                     to: DateTime.parse("2019-04-04 3:00pm"), total_hours: 0.50))
           ]
 
+          allow(activities).to receive(:completed) { activities }
+
           result = Timesheet.new(OpenStruct.new(attributes_for(:timesheet_with_activities, activities: activities)), {criteria: criteria}).process_timesheet
 
           expect(result.regular).to eq(7.0)
@@ -209,6 +222,8 @@ module Processors
                                             {no_rules: true, criteria: criteria}).process_timesheet }
 
       it 'should contain proper defaults' do
+        allow_any_instance_of(Array).to receive(:completed) { [] }
+
         expect(subject.id).to eq(1)
         expect(subject.regular).to eq(0.0)
         expect(subject.overtime).to eq(0.0)
@@ -229,6 +244,7 @@ module Processors
                                             {no_rules: true, criteria: criteria}).process_timesheet }
 
       it 'should calculate billable, regular and total to be the same' do
+        allow(activities).to receive(:completed) { activities }
         expect(subject.id).to eq(1)
         expect(subject.regular).to eq(3.0)
         expect(subject.overtime).to eq(0.0)

@@ -35,10 +35,16 @@ module Rules
 
       def process_activity
         if check
-          @processed_activity.regular += @processed_activity.overtime
+          if (@processed_activity.regular + @processed_activity.overtime) > @base.minimum_weekly_hours
+            @processed_activity.overtime = (@processed_activity.regular + @processed_activity.overtime) - @base.minimum_weekly_hours
+            @processed_activity.regular = @base.minimum_weekly_hours
+          else
+            @processed_activity.regular += @processed_activity.overtime
+            @processed_activity.overtime = 0.0
+          end
+
           @processed_activity.raw_regular = @processed_activity.regular * 3600.0
-          @processed_activity.overtime = 0.0
-          @processed_activity.raw_overtime = 0.0
+          @processed_activity.raw_overtime = @processed_activity.overtime * 3600.0
 
           @base.stop = true
         end
