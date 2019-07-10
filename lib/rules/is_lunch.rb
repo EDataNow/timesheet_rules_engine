@@ -37,7 +37,7 @@ module Rules
     def process_activity
       if check
         @processed_activity[:payable] = 0.0
-        @processed_activity[:billable] = @activity.total_hours
+        @processed_activity[:billable] = 0.0
         @processed_activity[:regular] = 0.0
         @processed_activity[:raw_regular] = 0.0
         @processed_activity[:overtime] = 0.0

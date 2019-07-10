@@ -27,7 +27,7 @@ module Rules
         subject { lunch.process_activity }
 
         it "should calculate payable to be the same as total hours" do
-          expect(subject.billable).to eq(1.0)
+          expect(subject.lunch).to eq(1.0)
           expect(subject.payable).to eq(0.0)
           expect(subject.total).to eq(1.0)
         end
@@ -39,7 +39,7 @@ module Rules
 
         it "should not calculate payable total to be the same as total hours" do
           expect(subject.payable).to eq(0.0)
-          expect(subject.billable).to eq(0.0)
+          expect(subject.lunch).to eq(0.0)
           expect(subject.total).to eq(1.0)
         end
       end
