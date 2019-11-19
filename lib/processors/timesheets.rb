@@ -7,7 +7,7 @@ module Processors
     DEFAULT_WEEKLY_RULES = [
                                "Incentive::QualifiesForWeeklyOvertimeAfterLeavingEarly",
                                "Incentive::LeftEarlyButUnderMinimumWeekly",
-                              #  'Ca::On::MinimumWeeklyHours',
+                               'Ca::On::MinimumWeeklyHours'
                              ]
 
     DEFAULTS = {
